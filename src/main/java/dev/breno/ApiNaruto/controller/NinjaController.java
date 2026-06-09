@@ -4,47 +4,119 @@
  */
 package dev.breno.ApiNaruto.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import dev.breno.ApiNaruto.model.NinjaModel;
+import dev.breno.ApiNaruto.service.NinjaService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
+ * ============================================================================
+ * CAMADA DE ENTRADA (CONTROLLER)
+ * ============================================================================
  *
- * @author brenorocha
+ * Responsável por receber as requisições HTTP e encaminhá-las
+ * para a camada de negócio (Service).
+ *
+ * Fluxo:
+ *
+ * Cliente
+ *    ↓
+ * Controller
+ *    ↓
+ * Service
+ *    ↓
+ * Repository
+ *    ↓
+ * Banco de Dados
  */
-@RestController /* Rest = transferência de estado representacional (padrão de APIs)
-                   Controller = controlador
-"Com esse Anotations essa classe vai receber requisições HTTP e retornar respostas."
-*/
 
+@RestController
 
-@RequestMapping("/ninjas") /* Request = requisição
-                              Mapping = mapeamento
+/**
+ * @RequestMapping
+ *
+ * Tradução:
+ * Request = Requisição
+ * Mapping = Mapeamento
+ *
+ * Define a rota base deste Controller.
+ *
+ * Todas as rotas começarão com:
+ *
+ * /ninjas
+ */
+@RequestMapping("/ninjas")
 
-"Significa que toda rota desta classe começará com:"
-/ninjas
-
-e ai vamos ter:
-GET /ninjas
-POST /ninjas
-PUT /ninjas
-DELETE /ninjas
-*/
-
-
-
-
-
-
+/**
+ * @RequiredArgsConstructor (Lombok)
+ *
+ * Tradução:
+ * Required = Obrigatório
+ * Args = Argumentos
+ * Constructor = Construtor
+ *
+ * Gera automaticamente um construtor contendo todos
+ * os atributos marcados como final.
+ *
+ * Assim, não precisamos escrever manualmente:
+ *
+ * public NinjaController(NinjaService ninjaService){
+ *     this.ninjaService = ninjaService;
+ * }
+ *
+ * Essa abordagem é considerada uma boa prática no
+ * Spring Boot moderno para Injeção de Dependência.
+ */
+@RequiredArgsConstructor
 public class NinjaController {
-           //final = não poderá receber outra referência depois da construção do objeto
-    private final NinjaService ninjaService; 
-    //Porque o uso de final? Achei uma boa estrutura o Spring apenas injetar o Service uma vez.
-    
-    public NinjaController(NinjaService ninjaService) {
-         this.ninjaService = ninjaService;
-         //this = este objeto
-         //this.ninjaService = ninjaService; O ATRIBUTO DA CLASSE RECEBE O PARÂMETRO RECEBIDO PELO CONSTRUTOR.
-         
+
+    /**
+     * Camada responsável pelas regras de negócio.
+     */
+    private final NinjaService ninjaService;
+
+    /**
+     * @GetMapping
+     *
+     * Tradução:
+     * GET = Buscar
+     *
+     * Endpoint:
+     *
+     * GET /ninjas
+     *
+     * Retorna todos os ninjas cadastrados.
+     */
+    @GetMapping
+    public List<NinjaModel> listarNinjas() {
+
+        return ninjaService.listarNinjas();
+
     }
-    
+
+    /**
+     * @PostMapping
+     *
+     * Tradução:
+     * POST = Criar
+     *
+     * Endpoint:
+     *
+     * POST /ninjas
+     *
+     * Recebe um Ninja enviado no corpo da requisição
+     * e encaminha para o Service realizar a persistência.
+     *
+     * Futuramente utilizaremos DTO + @Valid para
+     * validar os dados de entrada.
+     */
+    @PostMapping
+    public NinjaModel salvarNinja(@RequestBody NinjaModel ninja) {
+
+        return ninjaService.salvarNinja(ninja);
+
+    }
+
 }
