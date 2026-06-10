@@ -93,7 +93,7 @@ public class MissaoService {
         
         // Atualiza apenas os campos permitidos, mantendo a integridade do ID original
         missaoExistente.setMissao(missaoAtualizada.getMissao());
-        missaoExistente.setRanking_da_missao(missaoAtualizada.getRanking_da_missao());
+        missaoExistente.setRankingDaMissao(missaoAtualizada.getRankingDaMissao());
         
         return missaoRepository.save(missaoExistente);
     }

@@ -6,6 +6,7 @@ package dev.breno.ApiNaruto.controller;
 
 import dev.breno.ApiNaruto.model.NinjaModel;
 import dev.breno.ApiNaruto.service.NinjaService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -70,7 +71,7 @@ public class NinjaController {
      * @return Ninja criado com status 201 Created.
      */
     @PostMapping
-    public ResponseEntity<NinjaModel> salvarNinja(@RequestBody NinjaModel ninja) {
+    public ResponseEntity<NinjaModel> salvarNinja(@RequestBody @Valid NinjaModel ninja) {
         NinjaModel novoNinja = ninjaService.salvarNinja(ninja);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoNinja);
     }
@@ -81,12 +82,12 @@ public class NinjaController {
      * 
      * @param id ID do ninja a ser atualizado.
      * @param ninja Dados atualizados do ninja.
-     * @return Ninja atualizado com status 200 OK.
+     * @return Ninja updated com status 200 OK.
      */
     @PutMapping("/{id}")
     public ResponseEntity<NinjaModel> atualizarNinja(
             @PathVariable Long id, 
-            @RequestBody NinjaModel ninja) {
+            @RequestBody @Valid NinjaModel ninja) {
         NinjaModel ninjaAtualizado = ninjaService.atualizarNinja(id, ninja);
         return ResponseEntity.ok(ninjaAtualizado);
     }

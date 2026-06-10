@@ -2,6 +2,7 @@ package dev.breno.ApiNaruto.controller;
 
 import dev.breno.ApiNaruto.model.MissaoModel;
 import dev.breno.ApiNaruto.service.MissaoService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -66,7 +67,7 @@ public class MissaoController {
      * @return Missão criada com status 201 Created.
      */
     @PostMapping
-    public ResponseEntity<MissaoModel> salvarMissao(@RequestBody MissaoModel missao) {
+    public ResponseEntity<MissaoModel> salvarMissao(@RequestBody @Valid MissaoModel missao) {
         MissaoModel novaMissao = missaoService.salvarMissao(missao);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaMissao);
     }
@@ -75,14 +76,14 @@ public class MissaoController {
      * PUT /missoes/{id}
      * Atualiza uma missão existente de forma segura.
      * 
-     * @param id ID da missão a ser atualizada.
+     * @param id ID da missão a ser actualizada.
      * @param missao Dados atualizados da missão.
      * @return Missão atualizada com status 200 OK.
      */
     @PutMapping("/{id}")
     public ResponseEntity<MissaoModel> atualizarMissao(
             @PathVariable Long id, 
-            @RequestBody MissaoModel missao) {
+            @RequestBody @Valid MissaoModel missao) {
         MissaoModel missaoAtualizada = missaoService.atualizarMissao(id, missao);
         return ResponseEntity.ok(missaoAtualizada);
     }

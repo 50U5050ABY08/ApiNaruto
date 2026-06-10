@@ -95,7 +95,7 @@ public class NinjaService {
         ninjaExistente.setNome(ninjaAtualizado.getNome());
         ninjaExistente.setEmail(ninjaAtualizado.getEmail());
         ninjaExistente.setIdade(ninjaAtualizado.getIdade());
-        ninjaExistente.setMissoes(ninjaAtualizado.getMissoes());
+        ninjaExistente.setMissao(ninjaAtualizado.getMissao());
         
         return ninjaRepository.save(ninjaExistente);
     }
