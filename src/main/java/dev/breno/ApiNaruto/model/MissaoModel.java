@@ -4,7 +4,6 @@
  */
 package dev.breno.ApiNaruto.model;
 
-import dev.breno.ApiNaruto.model.NinjaModel;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,18 +30,13 @@ public class MissaoModel {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
     
-    
-    private String missão;
-    
-    
+    private String missao;
     
     private String ranking_da_missao;
     
-   
     @OneToMany(mappedBy = "missoes") // um para todos.
     private List<NinjaModel> ninjas;
-    
     
 }
