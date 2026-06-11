@@ -82,7 +82,7 @@ public class NinjaController {
      * 
      * @param id ID do ninja a ser atualizado.
      * @param ninja Dados atualizados do ninja.
-     * @return Ninja updated com status 200 OK.
+     * @return Ninja atualizado com status 200 OK.
      */
     @PutMapping("/{id}")
     public ResponseEntity<NinjaModel> atualizarNinja(
