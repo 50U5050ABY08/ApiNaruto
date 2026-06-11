@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import dev.breno.ApiNaruto.dto.NinjaResponseDTO;
 
 /**
  * ============================================================================
@@ -44,11 +45,27 @@ public class NinjaController {
      * 
      * @return Lista de ninjas com status 200 OK.
      */
-    @GetMapping
-    public ResponseEntity<List<NinjaModel>> listarNinjas() {
-        List<NinjaModel> ninjas = ninjaService.listarNinjas();
-        return ResponseEntity.ok(ninjas);
-    }
+    
+    
+    /**
+ * ============================================================================
+ * LISTAR TODOS OS NINJAS
+ * ============================================================================
+ *
+ * Busca todos os ninjas cadastrados e retorna uma lista de DTOs.
+ *
+ * Utilizamos DTO para que a API exponha apenas os dados necessários,
+ * sem devolver diretamente a entidade do banco de dados.
+     * @return 
+ */
+@GetMapping
+public ResponseEntity<List<NinjaResponseDTO>> listarNinjas() {
+
+    List<NinjaResponseDTO> ninjas = ninjaService.listarNinjas();
+
+    return ResponseEntity.ok(ninjas);
+
+}
 
     /**
      * GET /ninjas/{id}

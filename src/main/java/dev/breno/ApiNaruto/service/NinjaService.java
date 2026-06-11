@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import dev.breno.ApiNaruto.dto.NinjaResponseDTO;
+import dev.breno.ApiNaruto.mapper.NinjaMapper;
 
 /**
  * ============================================================================
@@ -50,9 +52,42 @@ public class NinjaService {
      * Retorna todos os ninjas cadastrados.
      * @return 
      */
-    public List<NinjaModel> listarNinjas() {
-        return ninjaRepository.findAll();
-    }
+    
+    /**
+ * ============================================================================
+ * LISTAR TODOS OS NINJAS
+ * ============================================================================
+ *
+ * Busca todos os ninjas cadastrados no banco de dados e converte cada
+ * entidade (NinjaModel) para um DTO de resposta (NinjaResponseDTO).
+ *
+ * Utilizamos DTO para evitar expor diretamente nossa entidade do banco,
+ * seguindo boas práticas de arquitetura e segurança.
+ *
+ * Fluxo:
+ *
+ * Banco
+ *    ↓
+ * List<NinjaModel>
+ *    ↓
+ * NinjaMapper
+ *    ↓
+ * List<NinjaResponseDTO>
+ *    ↓
+ * Cliente
+     * @return 
+ */
+public List<NinjaResponseDTO> listarNinjas() {
+
+    // Busca todos os ninjas cadastrados
+    List<NinjaModel> ninjas = ninjaRepository.findAll();
+
+    // Converte cada NinjaModel em NinjaResponseDTO
+    return ninjas.stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
+
+}
 
     /**
      * Busca um ninja pelo seu ID de forma segura.
