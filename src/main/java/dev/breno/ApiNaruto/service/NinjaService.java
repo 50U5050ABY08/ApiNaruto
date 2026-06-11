@@ -1,6 +1,8 @@
 package dev.breno.ApiNaruto.service;
 
+import dev.breno.ApiNaruto.model.MissaoModel;
 import dev.breno.ApiNaruto.model.NinjaModel;
+import dev.breno.ApiNaruto.repository.MissaoRepository;
 import dev.breno.ApiNaruto.repository.NinjaRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +38,17 @@ public class NinjaService {
      * Injetada de forma segura via construtor pelo Lombok (@RequiredArgsConstructor).
      */
     private final NinjaRepository ninjaRepository;
-
+    
+/**
+     * Dependência responsável pelo acesso ao banco de dados de missao.
+     * Injetada de forma segura via construtor pelo Lombok (@RequiredArgsConstructor).
+     */
+    private final MissaoRepository missaoRepository;
+    
+    
     /**
      * Retorna todos os ninjas cadastrados.
+     * @return 
      */
     public List<NinjaModel> listarNinjas() {
         return ninjaRepository.findAll();
@@ -66,6 +76,23 @@ public class NinjaService {
     public NinjaModel salvarNinja(NinjaModel ninja) {
         // Garantir que o ID seja nulo na criação para evitar que o cliente force a atualização de um registro existente (ID Spoofing)
         ninja.setId(null);
+        
+        // Verifica se o usuário enviou uma missão.
+        if (ninja.getMissao() != null) {
+                         //Procura essa missão no banco.
+    MissaoModel missao = missaoRepository.findById(
+            
+            //Pega apenas o ID informado no JSON.
+            ninja.getMissao().getId())
+            
+            //Se não existir, lança um erro 404 Not Found, em vez de salvar um relacionamento inválido.
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Missão não encontrada."
+            ));
+    //Associa ao ninja a entidade que realmente veio do banco, garantindo consistência.
+    ninja.setMissao(missao);
+}
         return ninjaRepository.save(ninja);
     }
 
