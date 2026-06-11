@@ -1,5 +1,6 @@
 package dev.breno.ApiNaruto.service;
 
+import dev.breno.ApiNaruto.dto.NinjaRequestDTO;
 import dev.breno.ApiNaruto.model.MissaoModel;
 import dev.breno.ApiNaruto.model.NinjaModel;
 import dev.breno.ApiNaruto.repository.MissaoRepository;
@@ -89,18 +90,68 @@ public List<NinjaResponseDTO> listarNinjas() {
 
 }
 
+
+/**
+ * ============================================================================
+ * BUSCA INTERNA DA ENTIDADE
+ * ============================================================================
+ *
+ * Método utilizado apenas pelo Service para recuperar a entidade
+ * NinjaModel diretamente do banco de dados.
+ *
+ * Diferente do método buscarNinjaPorId(), este retorna a entidade
+ * e não um DTO, sendo utilizado em operações internas como UPDATE
+ * e DELETE.
+ *
+ * @param id ID do ninja.
+ * @return NinjaModel encontrado.
+ */
+private NinjaModel buscarEntidadePorId(Long id) {
+
+    return ninjaRepository.findById(id)
+            .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Ninja não encontrado com ID: " + id));
+}
+
     /**
-     * Busca um ninja pelo seu ID de forma segura.
-     * 
-     * @param id ID do ninja a ser buscado.
-     * @return NinjaModel se encontrado.
-     * @throws ResponseStatusException se o ninja não for encontrado (HTTP 404).
-     */
-    public NinjaModel buscarNinjaPorId(Long id) {
-        return ninjaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Ninja não encontrado com o ID: " + id));
-    }
+ * ============================================================================
+ * BUSCAR NINJA POR ID
+ * ============================================================================
+ *
+ * Busca um ninja pelo seu identificador e converte a entidade para um
+ * DTO antes de retornar ao Controller.
+ *
+ * Utilizamos DTO para evitar expor diretamente a estrutura da entidade
+ * do banco de dados para o cliente da API.
+ *
+ * Fluxo:
+ *
+ * Banco
+ *    ↓
+ * NinjaModel
+ *    ↓
+ * NinjaMapper
+ *    ↓
+ * NinjaResponseDTO
+ *
+ * @param id ID do ninja.
+ * @return NinjaResponseDTO.
+ */
+public NinjaResponseDTO buscarNinjaPorId(Long id) {
+
+    // Busca o ninja ou lança exceção caso não exista
+    NinjaModel ninja = ninjaRepository.findById(id)
+            .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Ninja não encontrado com ID: " + id));
+
+    // Converte para DTO
+    return NinjaMapper.toResponseDTO(ninja);
+
+}
 
     /**
      * Salva um novo ninja no banco de dados.
@@ -108,27 +159,31 @@ public List<NinjaResponseDTO> listarNinjas() {
      * @param ninja Objeto contendo os dados do ninja.
      * @return O ninja salvo com seu ID gerado.
      */
-    public NinjaModel salvarNinja(NinjaModel ninja) {
+    public NinjaResponseDTO salvarNinja(NinjaRequestDTO ninjaDTO) {
+        
+        // Cria uma nova entidade que será persistida no banco
+        NinjaModel ninja = new NinjaModel();
+        
+        // Copia os dados enviados pelo cliente para a entidade
+        ninja.setNome(ninjaDTO.getNome());
+        ninja.setEmail(ninjaDTO.getEmail());
+        ninja.setIdade(ninjaDTO.getIdade());
         // Garantir que o ID seja nulo na criação para evitar que o cliente force a atualização de um registro existente (ID Spoofing)
         ninja.setId(null);
+
+        MissaoModel missao = missaoRepository.findById(
+        ninjaDTO.getMissaoId())
+        .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Missão não encontrada."
+        ));
         
-        // Verifica se o usuário enviou uma missão.
-        if (ninja.getMissao() != null) {
-                         //Procura essa missão no banco.
-    MissaoModel missao = missaoRepository.findById(
-            
-            //Pega apenas o ID informado no JSON.
-            ninja.getMissao().getId())
-            
-            //Se não existir, lança um erro 404 Not Found, em vez de salvar um relacionamento inválido.
-            .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Missão não encontrada."
-            ));
-    //Associa ao ninja a entidade que realmente veio do banco, garantindo consistência.
-    ninja.setMissao(missao);
-}
-        return ninjaRepository.save(ninja);
+        ninja.setMissao(missao);
+        
+        // Salva no banco
+        NinjaModel ninjaSalvo = ninjaRepository.save(ninja);
+        
+        return NinjaMapper.toResponseDTO(ninjaSalvo);
     }
 
     /**
@@ -138,7 +193,7 @@ public List<NinjaResponseDTO> listarNinjas() {
      */
     public void deletarNinja(Long id) {
         // Verifica se o ninja existe antes de tentar deletar para evitar erros inesperados
-        NinjaModel ninja = buscarNinjaPorId(id);
+        NinjaModel ninja = buscarEntidadePorId(id);
         ninjaRepository.delete(ninja);
     }
 
@@ -151,7 +206,7 @@ public List<NinjaResponseDTO> listarNinjas() {
      */
     public NinjaModel atualizarNinja(Long id, NinjaModel ninjaAtualizado) {
         // Verifica se o ninja existe no banco antes de atualizar
-        NinjaModel ninjaExistente = buscarNinjaPorId(id);
+        NinjaModel ninjaExistente = buscarEntidadePorId(id);
         
         // Atualiza apenas os campos permitidos, mantendo a integridade do ID original
         ninjaExistente.setNome(ninjaAtualizado.getNome());

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import dev.breno.ApiNaruto.dto.NinjaResponseDTO;
+import dev.breno.ApiNaruto.dto.NinjaRequestDTO;
 
 /**
  * ============================================================================
@@ -68,30 +69,61 @@ public ResponseEntity<List<NinjaResponseDTO>> listarNinjas() {
 }
 
     /**
-     * GET /ninjas/{id}
-     * Busca um ninja específico pelo ID.
-     * 
-     * @param id ID do ninja.
-     * @return Ninja encontrado com status 200 OK.
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<NinjaModel> buscarNinjaPorId(@PathVariable Long id) {
-        NinjaModel ninja = ninjaService.buscarNinjaPorId(id);
-        return ResponseEntity.ok(ninja);
-    }
+ * ============================================================================
+ * BUSCAR NINJA POR ID
+ * ============================================================================
+ *
+ * Endpoint responsável por localizar um ninja pelo seu ID.
+ *
+ * O Controller delega a regra de negócio ao Service e retorna um
+ * NinjaResponseDTO ao cliente, evitando expor diretamente a entidade
+ * do banco de dados.
+ *
+ * Endpoint:
+ *
+ * GET /ninjas/{id}
+ *
+ * @param id Identificador do ninja.
+ * @return NinjaResponseDTO com status HTTP 200 (OK).
+ */
+@GetMapping("/{id}")
+public ResponseEntity<NinjaResponseDTO> buscarNinjaPorId(
+        @PathVariable Long id) {
 
-    /**
-     * POST /ninjas
-     * Cria um novo ninja de forma segura.
-     * 
-     * @param ninja Dados do ninja a ser criado.
-     * @return Ninja criado com status 201 Created.
-     */
-    @PostMapping
-    public ResponseEntity<NinjaModel> salvarNinja(@RequestBody @Valid NinjaModel ninja) {
-        NinjaModel novoNinja = ninjaService.salvarNinja(ninja);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoNinja);
-    }
+    NinjaResponseDTO ninja = ninjaService.buscarNinjaPorId(id);
+
+    return ResponseEntity.ok(ninja);
+
+}
+
+/**
+ * ============================================================================
+ * CADASTRAR NOVO NINJA
+ * ============================================================================
+ *
+ * Recebe um NinjaRequestDTO enviado pelo cliente, encaminha para a
+ * camada de serviço e retorna um NinjaResponseDTO.
+ *
+ * Dessa forma a API deixa de expor diretamente a entidade do banco,
+ * seguindo boas práticas de arquitetura em camadas.
+ *
+ * Endpoint:
+ *
+ * POST /ninjas
+ *
+ * @param ninja Dados enviados pelo cliente.
+ * @return Ninja cadastrado com status HTTP 201 (Created).
+ */
+@PostMapping
+public ResponseEntity<NinjaResponseDTO> salvarNinja(
+        @RequestBody @Valid NinjaRequestDTO ninja) {
+
+    NinjaResponseDTO novoNinja = ninjaService.salvarNinja(ninja);
+
+    return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(novoNinja);
+}
 
     /**
      * PUT /ninjas/{id}
