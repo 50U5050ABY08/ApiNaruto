@@ -126,20 +126,55 @@ public ResponseEntity<NinjaResponseDTO> salvarNinja(
 }
 
     /**
-     * PUT /ninjas/{id}
-     * Atualiza um ninja existente de forma segura.
-     * 
-     * @param id ID do ninja a ser atualizado.
-     * @param ninja Dados atualizados do ninja.
-     * @return Ninja atualizado com status 200 OK.
-     */
+ * ============================================================================
+ * ATUALIZAR NINJA
+ * ============================================================================
+ *
+ * Endpoint responsável por atualizar um ninja já existente.
+ *
+ * Diferentemente da versão anterior, o Controller não recebe mais uma
+ * entidade (NinjaModel), e sim um DTO de requisição (NinjaRequestDTO),
+ * contendo apenas os dados que o cliente pode enviar.
+ *
+ * Após a atualização, o Service retorna um NinjaResponseDTO, evitando
+ * expor diretamente a entidade do banco de dados para o cliente.
+ *
+ * Fluxo:
+ *
+ * Cliente
+ *     ↓
+ * NinjaRequestDTO
+ *     ↓
+ * Controller
+ *     ↓
+ * Service
+ *     ↓
+ * Banco de Dados
+ *     ↓
+ * NinjaModel
+ *     ↓
+ * NinjaMapper
+ *     ↓
+ * NinjaResponseDTO
+ *
+ * Endpoint:
+ *
+ * PUT /ninjas/{id}
+ *
+ * @param id Identificador do ninja.
+ * @param ninjaDTO Dados enviados pelo cliente para atualização.
+ * @return Ninja atualizado em formato DTO com status HTTP 200 (OK).
+ */
     @PutMapping("/{id}")
-    public ResponseEntity<NinjaModel> atualizarNinja(
-            @PathVariable Long id, 
-            @RequestBody @Valid NinjaModel ninja) {
-        NinjaModel ninjaAtualizado = ninjaService.atualizarNinja(id, ninja);
-        return ResponseEntity.ok(ninjaAtualizado);
-    }
+public ResponseEntity<NinjaResponseDTO> atualizarNinja(
+        @PathVariable Long id,
+        @RequestBody @Valid NinjaRequestDTO ninjaDTO) {
+
+    NinjaResponseDTO ninjaAtualizado =
+            ninjaService.atualizarNinja(id, ninjaDTO);
+
+    return ResponseEntity.ok(ninjaAtualizado);
+}
 
     /**
      * DELETE /ninjas/{id}

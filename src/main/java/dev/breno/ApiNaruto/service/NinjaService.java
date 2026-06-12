@@ -197,23 +197,85 @@ public NinjaResponseDTO buscarNinjaPorId(Long id) {
         ninjaRepository.delete(ninja);
     }
 
-    /**
-     * Atualiza um ninja existente de forma segura.
-     * 
-     * @param id ID do ninja a ser atualizado.
-     * @param ninjaAtualizado Objeto contendo os novos dados.
-     * @return O ninja atualizado e persistido.
-     */
-    public NinjaModel atualizarNinja(Long id, NinjaModel ninjaAtualizado) {
-        // Verifica se o ninja existe no banco antes de atualizar
-        NinjaModel ninjaExistente = buscarEntidadePorId(id);
+            /**
+         * ============================================================================
+         * ATUALIZAR NINJA
+         * ============================================================================
+         *
+         * Atualiza um ninja existente utilizando um DTO de requisição.
+         *
+         * O cliente envia apenas os dados permitidos através do
+         * NinjaRequestDTO. O Service busca a entidade existente,
+         * atualiza seus atributos, persiste no banco e converte o
+         * resultado para um NinjaResponseDTO.
+         *
+         * Fluxo:
+         *
+         * Cliente
+         *     ↓
+         * NinjaRequestDTO
+         *     ↓
+         * Service
+         *     ↓
+         * NinjaModel
+         *     ↓
+         * Banco de Dados
+         *     ↓
+         * NinjaMapper
+         *     ↓
+         * NinjaResponseDTO
+         *
+         * @param id Identificador do ninja.
+         * @param ninjaDTO Dados enviados para atualização.
+         * @return Ninja atualizado em formato DTO.
+         */
+        public NinjaResponseDTO atualizarNinja(Long id,NinjaRequestDTO ninjaDTO) {
         
-        // Atualiza apenas os campos permitidos, mantendo a integridade do ID original
-        ninjaExistente.setNome(ninjaAtualizado.getNome());
-        ninjaExistente.setEmail(ninjaAtualizado.getEmail());
-        ninjaExistente.setIdade(ninjaAtualizado.getIdade());
-        ninjaExistente.setMissao(ninjaAtualizado.getMissao());
-        
-        return ninjaRepository.save(ninjaExistente);
+        /**
+        * Busca a entidade existente no banco.
+        *
+        * Não utilizamos buscarNinjaPorId(), pois esse método retorna
+        * um NinjaResponseDTO destinado ao cliente da API.
+        *
+        * Para atualizar um registro, precisamos da entidade
+        * (NinjaModel), que será modificada e salva novamente.
+        */
+       NinjaModel ninjaExistente = buscarEntidadePorId(id);
+       /**
+        * Atualiza os dados básicos do ninja.
+        *
+        * Copiamos os valores enviados no DTO para a entidade que já
+        * existe no banco de dados. Dessa forma preservamos seu ID
+        * original e modificamos apenas os campos permitidos.
+        */
+       ninjaExistente.setNome(ninjaDTO.getNome());
+       ninjaExistente.setEmail(ninjaDTO.getEmail());
+       ninjaExistente.setIdade(ninjaDTO.getIdade());
+       
+       /**
+        * Busca a missão informada pelo cliente.
+        *
+        * O DTO envia apenas o ID da missão. Por isso precisamos
+        * localizar a entidade no banco antes de associá-la ao ninja.
+        *
+        * Caso a missão não exista, retornamos um erro HTTP 404,
+        * impedindo a criação de um relacionamento inválido.
+        */
+       MissaoModel missao = missaoRepository.findById(
+               ninjaDTO.getMissaoId())
+               .orElseThrow(() -> new ResponseStatusException(
+                       HttpStatus.NOT_FOUND,
+                       "Missão não encontrada."
+               ));
+
+       /**
+        * Associa a missão encontrada ao ninja.
+        */
+       ninjaExistente.setMissao(missao);
+       
+       
+       NinjaModel ninjaSalvo = ninjaRepository.save(ninjaExistente);
+       
+       return NinjaMapper.toResponseDTO(ninjaSalvo);
     }
 }
