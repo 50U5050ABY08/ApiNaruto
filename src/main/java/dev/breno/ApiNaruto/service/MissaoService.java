@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import dev.breno.ApiNaruto.dto.MissaoResponseDTO;
+import dev.breno.ApiNaruto.mapper.MissaoMapper;
 
 /**
  * ============================================================================
@@ -39,10 +41,16 @@ public class MissaoService {
 
     /**
      * Retorna todas as missões cadastradas.
+     * @return 
      */
-    public List<MissaoModel> listarMissoes() {
-        return missaoRepository.findAll();
-    }
+    public List<MissaoResponseDTO> listarMissoes() {
+
+    List<MissaoModel> missoes = missaoRepository.findAll();
+
+    return missoes.stream()
+            .map(MissaoMapper::toResponseDTO)
+            .toList();
+}
 
     /**
      * Busca uma missão pelo seu ID de forma segura.
@@ -51,11 +59,15 @@ public class MissaoService {
      * @return MissaoModel se encontrada.
      * @throws ResponseStatusException se a missão não for encontrada (HTTP 404).
      */
-    public MissaoModel buscarMissaoPorId(Long id) {
-        return missaoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Missão não encontrada com o ID: " + id));
-    }
+    public MissaoResponseDTO buscarMissaoPorId(Long id) {
+
+    MissaoModel missao = missaoRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Missão não encontrada com o ID: " + id));
+
+    return MissaoMapper.toResponseDTO(missao);
+}
 
     /**
      * Salva uma nova missão no banco de dados.
@@ -75,10 +87,9 @@ public class MissaoService {
      * @param id ID da missão a ser deletada.
      */
     public void deletarMissao(Long id) {
-        // Verifica se a missão existe antes de tentar deletar para evitar erros inesperados
-        MissaoModel missao = buscarMissaoPorId(id);
-        missaoRepository.delete(missao);
-    }
+    MissaoModel missao = buscarEntidadePorId(id);
+    missaoRepository.delete(missao);
+}
 
     /**
      * Atualiza uma missão existente de forma segura.
@@ -88,13 +99,22 @@ public class MissaoService {
      * @return A missão atualizada e persistida.
      */
     public MissaoModel atualizarMissao(Long id, MissaoModel missaoAtualizada) {
-        // Verifica se a missão existe no banco antes de atualizar
-        MissaoModel missaoExistente = buscarMissaoPorId(id);
-        
-        // Atualiza apenas os campos permitidos, mantendo a integridade do ID original
-        missaoExistente.setMissao(missaoAtualizada.getMissao());
-        missaoExistente.setRankingDaMissao(missaoAtualizada.getRankingDaMissao());
-        
-        return missaoRepository.save(missaoExistente);
-    }
+
+    MissaoModel missaoExistente = buscarEntidadePorId(id);
+
+    missaoExistente.setMissao(missaoAtualizada.getMissao());
+    missaoExistente.setRankingDaMissao(missaoAtualizada.getRankingDaMissao());
+
+    return missaoRepository.save(missaoExistente);
+}
+    
+    private MissaoModel buscarEntidadePorId(Long id) {
+
+    return missaoRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Missão não encontrada com o ID: " + id));
+}
+    
+    
 }

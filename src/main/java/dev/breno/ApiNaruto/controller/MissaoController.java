@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import dev.breno.ApiNaruto.dto.MissaoResponseDTO;
 
 /**
  * ============================================================================
@@ -41,10 +42,10 @@ public class MissaoController {
      * @return Lista de missões com status 200 OK.
      */
     @GetMapping
-    public ResponseEntity<List<MissaoModel>> listarMissoes() {
-        List<MissaoModel> missoes = missaoService.listarMissoes();
-        return ResponseEntity.ok(missoes);
-    }
+    public ResponseEntity<List<MissaoResponseDTO>> listarMissoes() {
+    List<MissaoResponseDTO> missoes = missaoService.listarMissoes();
+    return ResponseEntity.ok(missoes);
+}
 
     /**
      * GET /missoes/{id}
@@ -54,10 +55,10 @@ public class MissaoController {
      * @return Missão encontrada com status 200 OK.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<MissaoModel> buscarMissaoPorId(@PathVariable Long id) {
-        MissaoModel missao = missaoService.buscarMissaoPorId(id);
-        return ResponseEntity.ok(missao);
-    }
+    public ResponseEntity<MissaoResponseDTO> buscarMissaoPorId(@PathVariable Long id) {
+    MissaoResponseDTO missao = missaoService.buscarMissaoPorId(id);
+    return ResponseEntity.ok(missao);
+}
 
     /**
      * POST /missoes
