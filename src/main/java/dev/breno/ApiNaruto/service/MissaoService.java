@@ -1,15 +1,15 @@
 package dev.breno.ApiNaruto.service;
 
 import dev.breno.ApiNaruto.model.MissaoModel;
-import dev.breno.ApiNaruto.repository.MissaoRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import dev.breno.ApiNaruto.dto.MissaoResponseDTO;
+import dev.breno.ApiNaruto.dto.MissaoRequestDTO;
 import dev.breno.ApiNaruto.mapper.MissaoMapper;
-
+import dev.breno.ApiNaruto.repository.MissaoRepository;
 /**
  * ============================================================================
  * CAMADA DE NEGÓCIO (SERVICE DE MISSÕES)
@@ -70,16 +70,48 @@ public class MissaoService {
 }
 
     /**
-     * Salva uma nova missão no banco de dados.
-     * 
-     * @param missao Objeto contendo os dados da missão.
-     * @return A missão salva com seu ID gerado.
-     */
-    public MissaoModel salvarMissao(MissaoModel missao) {
-        // Garantir que o ID seja nulo na criação para evitar que o cliente force a atualização de um registro existente (ID Spoofing)
-        missao.setId(null);
-        return missaoRepository.save(missao);
-    }
+ * ============================================================================
+ * SALVAR MISSÃO
+ * ============================================================================
+ *
+ * Cadastra uma nova missão utilizando um DTO de requisição.
+ *
+ * O cliente não envia mais diretamente a entidade MissaoModel.
+ * Ele envia um MissaoRequestDTO, contendo apenas os campos permitidos.
+ *
+ * Fluxo:
+ *
+ * Cliente
+ *     ↓
+ * MissaoRequestDTO
+ *     ↓
+ * Service
+ *     ↓
+ * MissaoModel
+ *     ↓
+ * Repository
+ *     ↓
+ * Banco de Dados
+ *     ↓
+ * MissaoMapper
+ *     ↓
+ * MissaoResponseDTO
+ *
+ * @param missaoDTO Dados enviados pelo cliente.
+ * @return Missão cadastrada em formato DTO.
+ */
+public MissaoResponseDTO salvarMissao(MissaoRequestDTO missaoDTO) {
+
+    MissaoModel missao = new MissaoModel();
+
+    missao.setId(null);
+    missao.setMissao(missaoDTO.getMissao());
+    missao.setRankingDaMissao(missaoDTO.getRankingDaMissao());
+
+    MissaoModel missaoSalva = missaoRepository.save(missao);
+
+    return MissaoMapper.toResponseDTO(missaoSalva);
+}
 
     /**
      * Deleta uma missão pelo ID de forma segura.
@@ -92,20 +124,50 @@ public class MissaoService {
 }
 
     /**
-     * Atualiza uma missão existente de forma segura.
-     * 
-     * @param id ID da missão a ser atualizada.
-     * @param missaoAtualizada Objeto contendo os novos dados.
-     * @return A missão atualizada e persistida.
-     */
-    public MissaoModel atualizarMissao(Long id, MissaoModel missaoAtualizada) {
+    * ============================================================================
+    * ATUALIZAR MISSÃO
+    * ============================================================================
+    *
+    * Atualiza uma missão existente utilizando um DTO de requisição.
+    *
+    * O cliente envia apenas os dados permitidos através do
+    * MissaoRequestDTO. O Service busca a entidade existente,
+    * atualiza seus atributos, persiste no banco e converte o
+    * resultado para um MissaoResponseDTO.
+    *
+    * @param id Identificador da missão.
+    * @param missaoDTO Dados enviados para atualização.
+    * @return Missão atualizada em formato DTO.
+    */
+   public MissaoResponseDTO atualizarMissao(
+           Long id,
+           MissaoRequestDTO missaoDTO) {
 
-    MissaoModel missaoExistente = buscarEntidadePorId(id);
+       /**
+    * Busca a entidade existente no banco.
+    */
+   MissaoModel missaoExistente = buscarEntidadePorId(id);
 
-    missaoExistente.setMissao(missaoAtualizada.getMissao());
-    missaoExistente.setRankingDaMissao(missaoAtualizada.getRankingDaMissao());
+   /**
+    * Atualiza os dados da missão.
+    */
+   missaoExistente.setMissao(
+           missaoDTO.getMissao());
 
-    return missaoRepository.save(missaoExistente);
+   missaoExistente.setRankingDaMissao(
+           missaoDTO.getRankingDaMissao());
+
+   /**
+    * Salva as alterações realizadas.
+    */
+   MissaoModel missaoSalva =
+           missaoRepository.save(missaoExistente);
+
+   /**
+    * Converte para DTO de resposta.
+    */
+   return MissaoMapper.toResponseDTO(
+        missaoSalva);
 }
     
     private MissaoModel buscarEntidadePorId(Long id) {

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import dev.breno.ApiNaruto.dto.MissaoResponseDTO;
+import dev.breno.ApiNaruto.dto.MissaoRequestDTO;
 
 /**
  * ============================================================================
@@ -68,10 +69,16 @@ public class MissaoController {
      * @return Missão criada com status 201 Created.
      */
     @PostMapping
-    public ResponseEntity<MissaoModel> salvarMissao(@RequestBody @Valid MissaoModel missao) {
-        MissaoModel novaMissao = missaoService.salvarMissao(missao);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaMissao);
-    }
+public ResponseEntity<MissaoResponseDTO> salvarMissao(
+        @RequestBody @Valid MissaoRequestDTO missaoDTO) {
+
+    MissaoResponseDTO novaMissao =
+            missaoService.salvarMissao(missaoDTO);
+
+    return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(novaMissao);
+}
 
     /**
      * PUT /missoes/{id}
@@ -82,12 +89,15 @@ public class MissaoController {
      * @return Missão atualizada com status 200 OK.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<MissaoModel> atualizarMissao(
-            @PathVariable Long id, 
-            @RequestBody @Valid MissaoModel missao) {
-        MissaoModel missaoAtualizada = missaoService.atualizarMissao(id, missao);
-        return ResponseEntity.ok(missaoAtualizada);
-    }
+public ResponseEntity<MissaoResponseDTO> atualizarMissao(
+        @PathVariable Long id,
+        @RequestBody @Valid MissaoRequestDTO missaoDTO) {
+
+    MissaoResponseDTO missaoAtualizada =
+            missaoService.atualizarMissao(id, missaoDTO);
+
+    return ResponseEntity.ok(missaoAtualizada);
+}
 
     /**
      * DELETE /missoes/{id}
