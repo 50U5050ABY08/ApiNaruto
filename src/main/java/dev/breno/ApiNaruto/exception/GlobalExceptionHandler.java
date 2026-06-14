@@ -54,20 +54,42 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Captura exceções do tipo ResponseStatusException (ex: 404 Not Found lançado nos Services).
-     * 
-     * @param ex Exceção capturada.
-     * @return Resposta limpa com o status HTTP correspondente e a mensagem de erro.
-     */
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, Object>> handleResponseStatusException(ResponseStatusException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", ex.getStatusCode().value());
-        response.put("error", ex.getReason());
-        
-        return ResponseEntity.status(ex.getStatusCode()).body(response);
-    }
+    * ============================================================================
+    * TRATAMENTO DE RESPONSE STATUS EXCEPTION
+    * ============================================================================
+    *
+    * Captura exceções lançadas manualmente nos Services com
+    * ResponseStatusException.
+    *
+    * Retorna uma resposta de erro padronizada contendo:
+    *
+    * - timestamp
+    * - status
+    * - error
+    * - message
+    * - path
+    *
+    * @param ex Exceção capturada.
+    * @param request Requisição HTTP que originou o erro.
+    * @return Resposta de erro padronizada.
+    */
+   @ExceptionHandler(ResponseStatusException.class)
+   public ResponseEntity<ErrorResponse> handleResponseStatusException(
+        ResponseStatusException ex,
+        jakarta.servlet.http.HttpServletRequest request) {
+
+    ErrorResponse response = new ErrorResponse(
+            LocalDateTime.now(),
+            ex.getStatusCode().value(),
+            ex.getStatusCode().toString(),
+            ex.getReason(),
+            request.getRequestURI()
+    );
+
+    return ResponseEntity
+            .status(ex.getStatusCode())
+            .body(response);
+}
 
     /**
      * Captura qualquer outra exceção genérica não tratada (Fallback de Segurança).
