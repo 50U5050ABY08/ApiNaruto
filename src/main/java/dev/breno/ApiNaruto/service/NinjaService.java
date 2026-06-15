@@ -5,13 +5,14 @@ import dev.breno.ApiNaruto.model.MissaoModel;
 import dev.breno.ApiNaruto.model.NinjaModel;
 import dev.breno.ApiNaruto.repository.MissaoRepository;
 import dev.breno.ApiNaruto.repository.NinjaRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import dev.breno.ApiNaruto.dto.NinjaResponseDTO;
 import dev.breno.ApiNaruto.mapper.NinjaMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * ============================================================================
@@ -54,40 +55,31 @@ public class NinjaService {
      * @return 
      */
     
-    /**
+/**
  * ============================================================================
- * LISTAR TODOS OS NINJAS
+ * LISTAR NINJAS COM PAGINAÇÃO
  * ============================================================================
  *
- * Busca todos os ninjas cadastrados no banco de dados e converte cada
- * entidade (NinjaModel) para um DTO de resposta (NinjaResponseDTO).
+ * Busca os ninjas cadastrados no banco de forma paginada.
  *
- * Utilizamos DTO para evitar expor diretamente nossa entidade do banco,
- * seguindo boas práticas de arquitetura e segurança.
+ * A paginação evita retornar todos os registros de uma vez, o que melhora
+ * desempenho, organização da resposta e escalabilidade da API.
  *
- * Fluxo:
+ * Exemplo de uso:
  *
- * Banco
- *    ↓
- * List<NinjaModel>
- *    ↓
- * NinjaMapper
- *    ↓
- * List<NinjaResponseDTO>
- *    ↓
- * Cliente
-     * @return 
+ * GET /ninjas?page=0&size=5
+ *
+ * page = número da página, começando em 0
+ * size = quantidade de registros por página
+ *
+ * @param pageable Objeto criado automaticamente pelo Spring com os dados
+ *                 de paginação enviados na URL.
+ * @return Página de NinjaResponseDTO.
  */
-public List<NinjaResponseDTO> listarNinjas() {
+public Page<NinjaResponseDTO> listarNinjas(Pageable pageable) {
 
-    // Busca todos os ninjas cadastrados
-    List<NinjaModel> ninjas = ninjaRepository.findAll();
-
-    // Converte cada NinjaModel em NinjaResponseDTO
-    return ninjas.stream()
-            .map(NinjaMapper::toResponseDTO)
-            .toList();
-
+    return ninjaRepository.findAll(pageable)
+            .map(NinjaMapper::toResponseDTO);
 }
 
 

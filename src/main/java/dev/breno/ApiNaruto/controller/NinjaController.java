@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import dev.breno.ApiNaruto.dto.NinjaResponseDTO;
 import dev.breno.ApiNaruto.dto.NinjaRequestDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * ============================================================================
@@ -49,45 +51,53 @@ public class NinjaController {
     
     
     /**
- * ============================================================================
- * LISTAR TODOS OS NINJAS
- * ============================================================================
- *
- * Busca todos os ninjas cadastrados e retorna uma lista de DTOs.
- *
- * Utilizamos DTO para que a API exponha apenas os dados necessários,
- * sem devolver diretamente a entidade do banco de dados.
-     * @return 
- */
-@GetMapping
-public ResponseEntity<List<NinjaResponseDTO>> listarNinjas() {
+     * ============================================================================
+     * LISTAR NINJAS COM PAGINAÇÃO
+     * ============================================================================
+     *
+     * Endpoint responsável por listar ninjas de forma paginada.
+     *
+     * A paginação evita retornar todos os registros de uma vez, melhorando
+     * desempenho e organização da resposta.
+     *
+     * Exemplo:
+     *
+     * GET /ninjas?page=0&size=5
+     *
+     * @param pageable Objeto criado automaticamente pelo Spring a partir dos
+     *                 parâmetros enviados na URL.
+     * @return Página de ninjas em formato DTO.
+     */
+    @GetMapping
+    public ResponseEntity<Page<NinjaResponseDTO>> listarNinjas(
+            Pageable pageable) {
 
-    List<NinjaResponseDTO> ninjas = ninjaService.listarNinjas();
+    Page<NinjaResponseDTO> ninjas =
+            ninjaService.listarNinjas(pageable);
 
     return ResponseEntity.ok(ninjas);
-
 }
 
     /**
- * ============================================================================
- * BUSCAR NINJA POR ID
- * ============================================================================
- *
- * Endpoint responsável por localizar um ninja pelo seu ID.
- *
- * O Controller delega a regra de negócio ao Service e retorna um
- * NinjaResponseDTO ao cliente, evitando expor diretamente a entidade
- * do banco de dados.
- *
- * Endpoint:
- *
- * GET /ninjas/{id}
- *
- * @param id Identificador do ninja.
- * @return NinjaResponseDTO com status HTTP 200 (OK).
- */
-@GetMapping("/{id}")
-public ResponseEntity<NinjaResponseDTO> buscarNinjaPorId(
+    * ============================================================================
+    * BUSCAR NINJA POR ID
+    * ============================================================================
+    *
+    * Endpoint responsável por localizar um ninja pelo seu ID.
+    *
+    * O Controller delega a regra de negócio ao Service e retorna um
+    * NinjaResponseDTO ao cliente, evitando expor diretamente a entidade
+    * do banco de dados.
+    *
+    * Endpoint:
+    *
+    * GET /ninjas/{id}
+    *
+    * @param id Identificador do ninja.
+    * @return NinjaResponseDTO com status HTTP 200 (OK).
+    */
+   @GetMapping("/{id}")
+   public ResponseEntity<NinjaResponseDTO> buscarNinjaPorId(
         @PathVariable Long id) {
 
     NinjaResponseDTO ninja = ninjaService.buscarNinjaPorId(id);
