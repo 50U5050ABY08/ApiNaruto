@@ -4,7 +4,6 @@
  */
 package dev.breno.ApiNaruto.controller;
 
-import dev.breno.ApiNaruto.model.NinjaModel;
 import dev.breno.ApiNaruto.service.NinjaService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -110,6 +109,148 @@ public ResponseEntity<List<NinjaResponseDTO>> buscarPorNome(
 
     List<NinjaResponseDTO> ninjas =
             ninjaService.buscarPorNome(nome);
+
+    return ResponseEntity.ok(ninjas);
+}
+
+/**
+ * ============================================================================
+ * BUSCAR NINJA POR E-MAIL
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar um ninja através do e-mail.
+ *
+ * Tradução:
+ *
+ * RequestParam:
+ * Request = requisição
+ * Param = parâmetro
+ *
+ * O e-mail será enviado como parâmetro na URL.
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/email?email=naruto@folha.com
+ *
+ * @param email E-mail usado na busca.
+ * @return Ninja encontrado em formato DTO.
+ */
+@GetMapping("/email")
+public ResponseEntity<NinjaResponseDTO> buscarPorEmail(
+        @RequestParam String email) {
+
+    NinjaResponseDTO ninja =
+            ninjaService.buscarPorEmail(email);
+
+    return ResponseEntity.ok(ninja);
+}
+
+
+/**
+ * ============================================================================
+ * BUSCAR NINJAS POR IDADE
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar ninjas utilizando a idade como filtro.
+ *
+ * Como vários ninjas podem ter a mesma idade, retornamos uma lista
+ * de NinjaResponseDTO.
+ *
+ * Tradução:
+ *
+ * RequestParam:
+ * Request = requisição
+ * Param = parâmetro
+ *
+ * @RequestParam captura o valor enviado na URL.
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/idade?idade=16
+ *
+ * Neste caso:
+ *
+ * idade = 16
+ *
+ * @param idade Idade usada como filtro.
+ * @return Lista de ninjas encontrados em formato DTO.
+ */
+@GetMapping("/idade")
+public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdade(
+        @RequestParam int idade) {
+
+    List<NinjaResponseDTO> ninjas =
+            ninjaService.buscarPorIdade(idade);
+
+    return ResponseEntity.ok(ninjas);
+}
+
+/**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MAIOR QUE
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar ninjas cuja idade seja maior
+ * que o valor informado na URL.
+ *
+ * Tradução:
+ *
+ * greater = maior
+ * than = que
+ *
+ * GreaterThan = maior que
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/idade/maior?idade=18
+ *
+ * Neste caso, serão retornados ninjas com idade maior que 18.
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade superior ao valor informado.
+ */
+@GetMapping("/idade/maior")
+public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorQue(
+        @RequestParam int idade) {
+
+    List<NinjaResponseDTO> ninjas =
+            ninjaService.buscarPorIdadeMaiorQue(idade);
+
+    return ResponseEntity.ok(ninjas);
+}
+
+
+/**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MAIOR OU IGUAL
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar ninjas cuja idade seja maior ou igual
+ * ao valor informado na URL.
+ *
+ * Tradução:
+ *
+ * greater = maior
+ * than = que
+ * equal = igual
+ *
+ * GreaterThanEqual = maior ou igual
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/idade/maior-ou-igual?idade=18
+ *
+ * Neste caso, serão retornados ninjas com idade maior ou igual a 18.
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade maior ou igual ao valor informado.
+ */
+@GetMapping("/idade/maior-ou-igual")
+public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorOuIgual(
+        @RequestParam int idade) {
+
+    List<NinjaResponseDTO> ninjas =
+            ninjaService.buscarPorIdadeMaiorOuIgual(idade);
 
     return ResponseEntity.ok(ninjas);
 }

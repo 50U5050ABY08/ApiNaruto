@@ -34,9 +34,9 @@ import java.util.List;
  *   retorne um erro interno 500 (Internal Server Error) com stack traces detalhados,
  *   o que seria uma vulnerabilidade de segurança (Information Disclosure / Vazamento de Informação).
  */
-@Service
-@RequiredArgsConstructor
-public class NinjaService {
+    @Service
+    @RequiredArgsConstructor
+    public class NinjaService {
 
     /**
      * Dependência responsável pelo acesso ao banco de dados de ninjas.
@@ -56,7 +56,7 @@ public class NinjaService {
      * @return 
      */
     
-/**
+    /**
  * ============================================================================
  * LISTAR NINJAS COM PAGINAÇÃO
  * ============================================================================
@@ -77,13 +77,13 @@ public class NinjaService {
  *                 de paginação enviados na URL.
  * @return Página de NinjaResponseDTO.
  */
-public Page<NinjaResponseDTO> listarNinjas(Pageable pageable) {
+    public Page<NinjaResponseDTO> listarNinjas(Pageable pageable) {
 
     return ninjaRepository.findAll(pageable)
             .map(NinjaMapper::toResponseDTO);
 }
 
-/**
+    /**
  * ============================================================================
  * BUSCAR NINJA POR NOME
  * ============================================================================
@@ -117,9 +117,155 @@ public Page<NinjaResponseDTO> listarNinjas(Pageable pageable) {
  * @param nome Nome do ninja.
  * @return Lista de ninjas encontrados.
  */
-public List<NinjaResponseDTO> buscarPorNome(String nome) {
+    public List<NinjaResponseDTO> buscarPorNome(String nome) {
 
-    return ninjaRepository.findByNomeContaining(nome)
+    return ninjaRepository.findByNomeContainingIgnoreCase(nome)
+            .stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
+}
+
+    /**
+ * ============================================================================
+ * BUSCAR NINJA POR E-MAIL
+ * ============================================================================
+ *
+ * Busca um ninja através do e-mail informado.
+ *
+ * Como o e-mail deve identificar apenas um ninja, usamos Optional
+ * no Repository para tratar com segurança o caso de nenhum registro
+ * ser encontrado.
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * email = e-mail
+ *
+ * findByEmail = encontrar por e-mail
+ *
+ * @param email E-mail do ninja.
+ * @return Ninja encontrado em formato DTO.
+ */
+    public NinjaResponseDTO buscarPorEmail(String email) {
+
+    NinjaModel ninja = ninjaRepository.findByEmail(email)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Ninja não encontrado com e-mail: " + email
+            ));
+
+    return NinjaMapper.toResponseDTO(ninja);
+}
+
+
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS POR IDADE
+ * ============================================================================
+ *
+ * Busca ninjas utilizando a idade como filtro.
+ *
+ * Como vários ninjas podem possuir a mesma idade,
+ * o Repository retorna uma lista de entidades.
+ *
+ * Fluxo:
+ *
+ * Controller
+ *     ↓
+ * Service
+ *     ↓
+ * Repository (findByIdade)
+ *     ↓
+ * List<NinjaModel>
+ *     ↓
+ * NinjaMapper
+ *     ↓
+ * List<NinjaResponseDTO>
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * idade = idade
+ *
+ * findByIdade = encontrar por idade
+ *
+ * @param idade Idade usada como filtro.
+ * @return Lista de ninjas encontrados em formato DTO.
+ */
+    public List<NinjaResponseDTO> buscarPorIdade(int idade) {
+
+    return ninjaRepository.findByIdade(idade)
+            .stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
+}
+
+/**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MAIOR QUE
+ * ============================================================================
+ *
+ * Busca ninjas cuja idade seja maior que o valor informado.
+ *
+ * Fluxo:
+ *
+ * Controller
+ *     ↓
+ * Service
+ *     ↓
+ * Repository (findByIdadeGreaterThan)
+ *     ↓
+ * List<NinjaModel>
+ *     ↓
+ * NinjaMapper
+ *     ↓
+ * List<NinjaResponseDTO>
+ *
+ * Tradução:
+ *
+ * greater = maior
+ * than = que
+ *
+ * GreaterThan = maior que
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade superior ao valor informado.
+ */
+    public List<NinjaResponseDTO> buscarPorIdadeMaiorQue(int idade) {
+
+    return ninjaRepository.findByIdadeGreaterThan(idade)
+            .stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
+}
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MAIOR OU IGUAL
+ * ============================================================================
+ *
+ * Busca ninjas cuja idade seja maior ou igual ao valor informado.
+ *
+ * Tradução:
+ *
+ * greater = maior
+ * than = que
+ * equal = igual
+ *
+ * GreaterThanEqual = maior ou igual
+ *
+ * SQL aproximado:
+ *
+ * WHERE idade >= ?
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade maior ou igual ao valor informado.
+ */
+public List<NinjaResponseDTO> buscarPorIdadeMaiorOuIgual(int idade) {
+
+    return ninjaRepository.findByIdadeGreaterThanEqual(idade)
             .stream()
             .map(NinjaMapper::toResponseDTO)
             .toList();
@@ -140,7 +286,7 @@ public List<NinjaResponseDTO> buscarPorNome(String nome) {
  * @param id ID do ninja.
  * @return NinjaModel encontrado.
  */
-private NinjaModel buscarEntidadePorId(Long id) {
+    private NinjaModel buscarEntidadePorId(Long id) {
 
     return ninjaRepository.findById(id)
             .orElseThrow(() ->
@@ -190,6 +336,7 @@ public NinjaResponseDTO buscarNinjaPorId(Long id) {
     /**
      * Salva um novo ninja no banco de dados.
      * 
+     * @param ninjaDTO
      * @param ninja Objeto contendo os dados do ninja.
      * @return O ninja salvo com seu ID gerado.
      */

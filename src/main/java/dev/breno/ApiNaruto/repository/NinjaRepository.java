@@ -4,6 +4,7 @@ import dev.breno.ApiNaruto.model.NinjaModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
     @Repository
     public interface NinjaRepository extends JpaRepository<NinjaModel, Long> {
@@ -69,5 +70,155 @@ import java.util.List;
  * @return Lista de ninjas encontrados.
  */
     List<NinjaModel> findByNomeContaining(String nome);
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJA POR TRECHO DO NOME IGNORANDO MAIÚSCULAS E MINÚSCULAS
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * nome = nome
+ * containing = contendo
+ * ignore = ignorar
+ * case = maiúsculas/minúsculas
+ *
+ * findByNomeContainingIgnoreCase
+ *
+ * Encontrar nomes contendo determinado texto sem diferenciar letras
+ * maiúsculas de minúsculas.
+ *
+ * Exemplos:
+ *
+ * naruto
+ * Naruto
+ * NARUTO
+ *
+ * Todos encontram:
+ *
+ * Naruto Uzumaki
+ *
+ * @param nome Trecho do nome.
+ * @return Lista de ninjas encontrados.
+ */
+    List<NinjaModel> findByNomeContainingIgnoreCase(String nome);
+    
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJA POR E-MAIL
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * email = e-mail
+ *
+ * findByEmail
+ *
+ * Encontrar ninja através do e-mail.
+ *
+ * Como o e-mail deve ser único na aplicação,
+ * esperamos retornar apenas um ninja.
+ *
+ * SQL aproximado:
+ *
+ * SELECT *
+ * FROM tb_cadastro
+ * WHERE email = ?
+ *
+ * @param email E-mail do ninja.
+ * @return Ninja encontrado.
+ */
+    Optional<NinjaModel> findByEmail(String email);
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS POR IDADE
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * idade = idade
+ *
+ * findByIdade
+ *
+ * Encontrar ninjas pela idade.
+ *
+ * Como vários ninjas podem ter a mesma idade,
+ * o retorno deve ser uma lista.
+ *
+ * SQL aproximado:
+ *
+ * SELECT *
+ * FROM tb_cadastro
+ * WHERE idade = ?
+ *
+ * @param idade Idade dos ninjas.
+ * @return Lista de ninjas encontrados.
+ */
+    List<NinjaModel> findByIdade(int idade);
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MAIOR QUE
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * idade = idade
+ * greater = maior
+ * than = que
+ *
+ * findByIdadeGreaterThan
+ *
+ * Encontrar ninjas com idade superior ao valor informado.
+ *
+ * SQL aproximado:
+ *
+ * SELECT *
+ * FROM tb_cadastro
+ * WHERE idade > ?
+ *
+ * @param idade Idade utilizada como referência.
+ * @return Lista de ninjas encontrados.
+ */
+    List<NinjaModel> findByIdadeGreaterThan(int idade);
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MAIOR OU IGUAL
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * idade = idade
+ * greater = maior
+ * than = que
+ * equal = igual
+ *
+ * findByIdadeGreaterThanEqual
+ *
+ * Encontrar ninjas com idade maior ou igual ao valor informado.
+ *
+ * SQL aproximado:
+ *
+ * SELECT *
+ * FROM tb_cadastro
+ * WHERE idade >= ?
+ *
+ * @param idade Idade utilizada como referência.
+ * @return Lista de ninjas encontrados.
+ */
+    List<NinjaModel> findByIdadeGreaterThanEqual(int idade);
 
 }
