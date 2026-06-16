@@ -13,6 +13,7 @@ import dev.breno.ApiNaruto.dto.NinjaResponseDTO;
 import dev.breno.ApiNaruto.mapper.NinjaMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 /**
  * ============================================================================
@@ -82,6 +83,47 @@ public Page<NinjaResponseDTO> listarNinjas(Pageable pageable) {
             .map(NinjaMapper::toResponseDTO);
 }
 
+/**
+ * ============================================================================
+ * BUSCAR NINJA POR NOME
+ * ============================================================================
+ *
+ * Busca ninjas cadastrados utilizando o nome como filtro.
+ *
+ * Fluxo:
+ *
+ * Cliente
+ *    ↓
+ * Nome informado
+ *    ↓
+ * Repository (findByNome)
+ *    ↓
+ * List<NinjaModel>
+ *    ↓
+ * NinjaMapper
+ *    ↓
+ * List<NinjaResponseDTO>
+ *    ↓
+ * Cliente
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * nome = nome
+ *
+ * findByNome = encontrar por nome
+ *
+ * @param nome Nome do ninja.
+ * @return Lista de ninjas encontrados.
+ */
+public List<NinjaResponseDTO> buscarPorNome(String nome) {
+
+    return ninjaRepository.findByNome(nome)
+            .stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
+}
 
 /**
  * ============================================================================

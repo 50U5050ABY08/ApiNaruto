@@ -77,6 +77,43 @@ public class NinjaController {
 
     return ResponseEntity.ok(ninjas);
 }
+    
+ /**
+ * ============================================================================
+ * BUSCAR NINJAS POR NOME
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar ninjas utilizando o nome como filtro.
+ *
+ * Tradução:
+ *
+ * RequestParam:
+ * Request = requisição
+ * Param = parâmetro
+ *
+ * @RequestParam pega um valor enviado na URL.
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/buscar?nome=Naruto
+ *
+ * Neste caso:
+ *
+ * nome = Naruto
+ *
+ * @param nome Nome usado como filtro de busca.
+ * @return Lista de ninjas encontrados em formato DTO.
+ */
+@GetMapping("/buscar")
+public ResponseEntity<List<NinjaResponseDTO>> buscarPorNome(
+        @RequestParam String nome) {
+
+    List<NinjaResponseDTO> ninjas =
+            ninjaService.buscarPorNome(nome);
+
+    return ResponseEntity.ok(ninjas);
+}
+
 
     /**
     * ============================================================================
