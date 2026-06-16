@@ -119,7 +119,7 @@ public Page<NinjaResponseDTO> listarNinjas(Pageable pageable) {
  */
 public List<NinjaResponseDTO> buscarPorNome(String nome) {
 
-    return ninjaRepository.findByNome(nome)
+    return ninjaRepository.findByNomeContaining(nome)
             .stream()
             .map(NinjaMapper::toResponseDTO)
             .toList();
