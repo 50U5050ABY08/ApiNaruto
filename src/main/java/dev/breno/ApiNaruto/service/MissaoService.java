@@ -172,7 +172,7 @@ public class MissaoService {
     
     private MissaoModel buscarEntidadePorId(Long id) {
 
-    return missaoRepository.findById(id)
+        return missaoRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Missão não encontrada com o ID: " + id));
@@ -214,10 +214,35 @@ public class MissaoService {
  */
     public List<MissaoResponseDTO> buscarPorRanking(String ranking) {
 
-    return missaoRepository.findByRankingDaMissao(ranking)
+        return missaoRepository.findByRankingDaMissao(ranking)
             .stream()
             .map(MissaoMapper::toResponseDTO)
             .toList();
+    }
+    
+    
+    /**
+ * ============================================================================
+ * BUSCAR MISSÕES POR RANKING PARCIAL
+ * ============================================================================
+ *
+ * Busca missões cujo ranking contenha o texto informado,
+ * ignorando diferenças entre letras maiúsculas e minúsculas.
+ *
+ * Tradução:
+ *
+ * Containing = contendo
+ * IgnoreCase = ignorar maiúsculas e minúsculas
+ *
+ * @param ranking Texto usado como filtro.
+ * @return Lista de missões encontradas em formato DTO.
+ */
+    public List<MissaoResponseDTO> buscarPorRankingParcial(String ranking) {
+
+        return missaoRepository.findByRankingDaMissaoContainingIgnoreCase(ranking)
+                .stream()
+                .map(MissaoMapper::toResponseDTO)
+                .toList();
     }
     
     

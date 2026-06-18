@@ -50,4 +50,29 @@ public interface MissaoRepository extends JpaRepository<MissaoModel, Long> {
  * @return Lista de missões encontradas.
  */
     List<MissaoModel> findByRankingDaMissao(String ranking);
+    
+    /**
+ * ============================================================================
+ * BUSCAR MISSÕES POR RANKING (PARCIAL E IGNORANDO CAIXA)
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * Containing = contendo
+ * IgnoreCase = ignorar maiúsculas e minúsculas
+ *
+ * Encontra missões cujo ranking contenha o texto informado,
+ * sem diferenciar letras maiúsculas de minúsculas.
+ *
+ * Exemplos:
+ *
+ * A
+ * a
+ *
+ * Ambos retornam o mesmo resultado.
+ *
+ * @param ranking Texto usado na busca.
+ * @return Lista de missões encontradas.
+ */
+    List<MissaoModel> findByRankingDaMissaoContainingIgnoreCase(String ranking);
 }

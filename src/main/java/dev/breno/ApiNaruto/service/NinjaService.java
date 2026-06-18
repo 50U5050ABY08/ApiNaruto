@@ -553,4 +553,31 @@ import java.util.List;
             .map(NinjaMapper::toResponseDTO)
             .toList();
     }
+    
+    /*
+    
+    BUSCAR NINJAS PELO RANKING DA MISSÃO USANDO JOIN
+    
+    Busca ninjas filtrando pelo ranking da missão associada.
+    
+    Esta busca usa uma consulta JPQL(JAVA PERSISTENCE QUERY LANGUAGE) com JOIN no Repository.
+    
+    Tradução:
+    
+    JOIN = juntar
+    
+    Neste caso:
+    
+    NinjaModel/missao/rankingDaMissao
+    
+    @param ranking Ranking da missão usado como filtro.
+    @return Lista de ninjas cuja missão possui o ranking informado.
+    */
+    public List<NinjaResponseDTO> buscarPorRankingDaMissao(String ranking) {
+        
+        return ninjaRepository.buscarNinjasPorRankingDaMissao(ranking)
+                .stream()
+                .map(NinjaMapper::toResponseDTO)
+                .toList();
+    }
 }

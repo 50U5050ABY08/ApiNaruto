@@ -254,6 +254,7 @@ public class NinjaController {
 
     return ResponseEntity.ok(ninjas);
 }
+        
     
     /**
  * ============================================================================
@@ -419,6 +420,42 @@ public ResponseEntity<List<NinjaResponseDTO>> buscarPorMissaoId(
 
     return ResponseEntity.ok(ninjas);
 }
+
+/**
+ * =============================================================================
+ * BUSCAR NINJAS PELO RANKING DA MISSÃO USANDO JOIN
+ * =============================================================================
+ * 
+ * Endpoint responsável por buscar ninjas filtrando pelo ranking
+ * da missão associada.
+ * 
+ * Esta busca usa JPQL com JOIN no Repository.
+ * 
+ * Tradução:
+ * 
+ * JOIN = juntar
+ * ranking = classificação
+ * 
+ * Exemplo
+ * 
+ * GET /ninjas/missao/ranking?ranking=A
+ * 
+ * Neste caso, serão retornados todos os ninjas cuja missão
+ * possui ranking A.
+ * 
+ * @param ranking Ranking da missão usado como filtro.
+ * @return Lista de ninjas vinculados a missões com o ranking informado.
+ */
+ @GetMapping("/missao/ranking")
+ public ResponseEntity<List<NinjaResponseDTO>> buscarPorRankingDaMissao(
+        @RequestParam String ranking) {
+     
+     List<NinjaResponseDTO> ninjas =
+             ninjaService.buscarPorRankingDaMissao(ranking);
+     
+     return ResponseEntity.ok(ninjas);
+ }
+
 
 /**
  * ============================================================================

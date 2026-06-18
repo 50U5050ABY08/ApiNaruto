@@ -96,6 +96,39 @@ public ResponseEntity<List<MissaoResponseDTO>> buscarPorRanking(
     return ResponseEntity.ok(missoes);
 }
 
+/**
+ * ============================================================================
+ * BUSCAR MISSÕES POR RANKING PARCIAL
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar missões cujo ranking contenha
+ * o texto informado, ignorando letras maiúsculas e minúsculas.
+ *
+ * Tradução:
+ *
+ * Containing = contendo
+ * IgnoreCase = ignorar maiúsculas e minúsculas
+ *
+ * Exemplo:
+ *
+ * GET /missoes/ranking/parcial?ranking=a
+ *
+ * Neste caso, serão retornadas missões cujo ranking contenha "a",
+ * como "A", "Rank A" ou "rank a".
+ *
+ * @param ranking Texto usado como filtro.
+ * @return Lista de missões encontradas em formato DTO.
+ */
+    @GetMapping("/ranking/parcial")
+    public ResponseEntity<List<MissaoResponseDTO>> buscarPorRankingParcial(
+        @RequestParam String ranking) {
+
+    List<MissaoResponseDTO> missoes =
+            missaoService.buscarPorRankingParcial(ranking);
+
+        return ResponseEntity.ok(missoes);
+    }
+
     /**
      * POST /missoes
      * Cria uma nova missão de forma segura.
@@ -104,35 +137,35 @@ public ResponseEntity<List<MissaoResponseDTO>> buscarPorRanking(
      * @return Missão criada com status 201 Created.
      */
     @PostMapping
-public ResponseEntity<MissaoResponseDTO> salvarMissao(
+    public ResponseEntity<MissaoResponseDTO> salvarMissao(
         @RequestBody @Valid MissaoRequestDTO missaoDTO) {
 
     MissaoResponseDTO novaMissao =
             missaoService.salvarMissao(missaoDTO);
 
-    return ResponseEntity
+        return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(novaMissao);
-}
+    }
 
     /**
      * PUT /missoes/{id}
      * Atualiza uma missão existente de forma segura.
      * 
      * @param id ID da missão a ser actualizada.
-     * @param missao Dados atualizados da missão.
+     * @param missaoDTO
      * @return Missão atualizada com status 200 OK.
      */
     @PutMapping("/{id}")
-public ResponseEntity<MissaoResponseDTO> atualizarMissao(
+    public ResponseEntity<MissaoResponseDTO> atualizarMissao(
         @PathVariable Long id,
         @RequestBody @Valid MissaoRequestDTO missaoDTO) {
 
     MissaoResponseDTO missaoAtualizada =
             missaoService.atualizarMissao(id, missaoDTO);
 
-    return ResponseEntity.ok(missaoAtualizada);
-}
+        return ResponseEntity.ok(missaoAtualizada);
+    }
 
     /**
      * DELETE /missoes/{id}

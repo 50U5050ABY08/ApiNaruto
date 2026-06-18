@@ -307,6 +307,45 @@ import org.springframework.data.repository.query.Param;
            """)
     List<NinjaModel> buscarNinjasMaioresQue (@Param("idade") int idade);
     
+   /*
+    *============================================================================
+    *BUSCAR NINJAS PELO RANKING DA MISSÃO USANDO JOIN
+    *============================================================================
+    *
+    *Consulta ninjas filtrando pelo ranking da missão associada.
+    *
+    Tradução:
+    *
+    *JOIN = juntar 
+    *SELECT = selecionar
+    *FROM = de
+    *WHERE = onde
+    *
+    *n = apelido para NinjaModel
+    *m = apelido para MissaoModel
+    *
+    *Essa consulta navega pelo relacionamento:
+    *
+    *NinjaModel/missao/rankingDaMissao.
+    *
+    *JPQL:
+    *
+    *SELECT n
+    *FROM NinjaModel n
+    *JOIN n.missao m
+    *WHERE m.rankingDaMissao = :ranking
+    *
+    *@param ranking Ranking da missão.
+    *@return Lista de ninjas cuja missão possui o ranking informado.
+   */
+    @Query("""
+           SELECT n
+           FROM NinjaModel n
+           JOIN n.missao m
+           WHERE m.rankingDaMissao = :ranking
+           """)
+    List<NinjaModel> buscarNinjasPorRankingDaMissao(@Param("ranking") String ranking);
+    
     /**
  * ============================================================================
  * BUSCAR NINJAS PELO ID DA MISSÃO
