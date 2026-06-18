@@ -243,6 +243,33 @@ import java.util.List;
     
     /**
  * ============================================================================
+ * BUSCAR NINJAS MAIORES QUE USANDO @QUERY
+ * ============================================================================
+ *
+ * Busca ninjas cuja idade seja maior que o valor informado,
+ * utilizando uma consulta JPQL escrita manualmente no Repository.
+ *
+ * Diferença:
+ *
+ * findByIdadeGreaterThan
+ *     → Spring gera a consulta pelo nome do método.
+ *
+ * buscarNinjasMaioresQue
+ *     → Nós escrevemos a consulta com @Query.
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade superior ao valor informado.
+ */
+    public List<NinjaResponseDTO> buscarMaioresQueComQuery(int idade) {
+
+    return ninjaRepository.buscarNinjasMaioresQue(idade)
+            .stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
+}
+    
+    /**
+ * ============================================================================
  * BUSCAR NINJAS COM IDADE MAIOR OU IGUAL
  * ============================================================================
  *
@@ -263,9 +290,68 @@ import java.util.List;
  * @param idade Idade usada como referência.
  * @return Lista de ninjas com idade maior ou igual ao valor informado.
  */
-public List<NinjaResponseDTO> buscarPorIdadeMaiorOuIgual(int idade) {
+    public List<NinjaResponseDTO> buscarPorIdadeMaiorOuIgual(int idade) {
 
     return ninjaRepository.findByIdadeGreaterThanEqual(idade)
+            .stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
+}
+
+/**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MENOR QUE
+ * ============================================================================
+ *
+ * Busca ninjas cuja idade seja menor que o valor informado.
+ *
+ * Tradução:
+ *
+ * less = menor
+ * than = que
+ *
+ * LessThan = menor que
+ *
+ * SQL aproximado:
+ *
+ * WHERE idade < ?
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade inferior ao valor informado.
+ */
+    public List<NinjaResponseDTO> buscarPorIdadeMenorQue(int idade) {
+
+    return ninjaRepository.findByIdadeLessThan(idade)
+            .stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
+}
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MENOR OU IGUAL
+ * ============================================================================
+ *
+ * Busca ninjas cuja idade seja menor ou igual ao valor informado.
+ *
+ * Tradução:
+ *
+ * less = menor
+ * than = que
+ * equal = igual
+ *
+ * LessThanEqual = menor ou igual
+ *
+ * SQL aproximado:
+ *
+ * WHERE idade <= ?
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade menor ou igual ao valor informado.
+ */
+    public List<NinjaResponseDTO> buscarPorIdadeMenorOuIgual(int idade) {
+
+    return ninjaRepository.findByIdadeLessThanEqual(idade)
             .stream()
             .map(NinjaMapper::toResponseDTO)
             .toList();
@@ -319,7 +405,7 @@ public List<NinjaResponseDTO> buscarPorIdadeMaiorOuIgual(int idade) {
  * @param id ID do ninja.
  * @return NinjaResponseDTO.
  */
-public NinjaResponseDTO buscarNinjaPorId(Long id) {
+    public NinjaResponseDTO buscarNinjaPorId(Long id) {
 
     // Busca o ninja ou lança exceção caso não exista
     NinjaModel ninja = ninjaRepository.findById(id)
@@ -458,5 +544,13 @@ public NinjaResponseDTO buscarNinjaPorId(Long id) {
        NinjaModel ninjaSalvo = ninjaRepository.save(ninjaExistente);
        
        return NinjaMapper.toResponseDTO(ninjaSalvo);
+    }
+
+    public List<NinjaResponseDTO> buscarPorMissaoId(Long missaoId) {
+
+    return ninjaRepository.findByMissaoId(missaoId)
+            .stream()
+            .map(NinjaMapper::toResponseDTO)
+            .toList();
     }
 }

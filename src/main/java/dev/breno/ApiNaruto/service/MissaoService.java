@@ -45,12 +45,12 @@ public class MissaoService {
      */
     public List<MissaoResponseDTO> listarMissoes() {
 
-    List<MissaoModel> missoes = missaoRepository.findAll();
+        List<MissaoModel> missoes = missaoRepository.findAll();
 
-    return missoes.stream()
-            .map(MissaoMapper::toResponseDTO)
-            .toList();
-}
+        return missoes.stream()
+                .map(MissaoMapper::toResponseDTO)
+                .toList();
+    }
 
     /**
      * Busca uma missão pelo seu ID de forma segura.
@@ -61,13 +61,13 @@ public class MissaoService {
      */
     public MissaoResponseDTO buscarMissaoPorId(Long id) {
 
-    MissaoModel missao = missaoRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Missão não encontrada com o ID: " + id));
+        MissaoModel missao = missaoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Missão não encontrada com o ID: " + id));
 
-    return MissaoMapper.toResponseDTO(missao);
-}
+        return MissaoMapper.toResponseDTO(missao);
+    }
 
     /**
  * ============================================================================
@@ -100,28 +100,28 @@ public class MissaoService {
  * @param missaoDTO Dados enviados pelo cliente.
  * @return Missão cadastrada em formato DTO.
  */
-public MissaoResponseDTO salvarMissao(MissaoRequestDTO missaoDTO) {
+    public MissaoResponseDTO salvarMissao(MissaoRequestDTO missaoDTO) {
 
-    MissaoModel missao = new MissaoModel();
+        MissaoModel missao = new MissaoModel();
 
-    missao.setId(null);
-    missao.setMissao(missaoDTO.getMissao());
-    missao.setRankingDaMissao(missaoDTO.getRankingDaMissao());
+        missao.setId(null);
+        missao.setMissao(missaoDTO.getMissao());
+        missao.setRankingDaMissao(missaoDTO.getRankingDaMissao());
 
-    MissaoModel missaoSalva = missaoRepository.save(missao);
+        MissaoModel missaoSalva = missaoRepository.save(missao);
 
-    return MissaoMapper.toResponseDTO(missaoSalva);
-}
+        return MissaoMapper.toResponseDTO(missaoSalva);
+    }
 
     /**
      * Deleta uma missão pelo ID de forma segura.
      * 
      * @param id ID da missão a ser deletada.
      */
-    public void deletarMissao(Long id) {
-    MissaoModel missao = buscarEntidadePorId(id);
-    missaoRepository.delete(missao);
-}
+        public void deletarMissao(Long id) {
+        MissaoModel missao = buscarEntidadePorId(id);
+        missaoRepository.delete(missao);
+    }
 
     /**
     * ============================================================================
@@ -166,9 +166,9 @@ public MissaoResponseDTO salvarMissao(MissaoRequestDTO missaoDTO) {
    /**
     * Converte para DTO de resposta.
     */
-   return MissaoMapper.toResponseDTO(
-        missaoSalva);
-}
+        return MissaoMapper.toResponseDTO(missaoSalva);
+    
+   }
     
     private MissaoModel buscarEntidadePorId(Long id) {
 
@@ -176,7 +176,49 @@ public MissaoResponseDTO salvarMissao(MissaoRequestDTO missaoDTO) {
             .orElseThrow(() -> new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Missão não encontrada com o ID: " + id));
-}
+    }
+    
+    
+    
+    /**
+ * ============================================================================
+ * BUSCAR MISSÕES POR RANKING
+ * ============================================================================
+ *
+ * Busca missões utilizando o ranking como filtro.
+ *
+ * Fluxo:
+ *
+ * Controller
+ *     ↓
+ * Service
+ *     ↓
+ * Repository (findByRankingDaMissao)
+ *     ↓
+ * List<MissaoModel>
+ *     ↓
+ * MissaoMapper
+ *     ↓
+ * List<MissaoResponseDTO>
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * rankingDaMissao = ranking da missão
+ *
+ * findByRankingDaMissao = encontrar pelo ranking da missão
+ *
+ * @param ranking Ranking usado como filtro.
+ * @return Lista de missões encontradas em formato DTO.
+ */
+    public List<MissaoResponseDTO> buscarPorRanking(String ranking) {
+
+    return missaoRepository.findByRankingDaMissao(ranking)
+            .stream()
+            .map(MissaoMapper::toResponseDTO)
+            .toList();
+    }
     
     
 }

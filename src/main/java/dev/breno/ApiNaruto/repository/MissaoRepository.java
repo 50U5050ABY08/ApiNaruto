@@ -1,6 +1,7 @@
 package dev.breno.ApiNaruto.repository;
 
 import dev.breno.ApiNaruto.model.MissaoModel;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +26,28 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MissaoRepository extends JpaRepository<MissaoModel, Long> {
     // Métodos como save(), findAll(), findById() e deleteById() já estão disponíveis automaticamente!
+    
+    /**
+ * ============================================================================
+ * BUSCAR MISSÕES PELO RANKING
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * ranking da missão = ranking da missão
+ *
+ * Encontra missões que possuem exatamente o ranking informado.
+ *
+ * SQL aproximado:
+ *
+ * SELECT *
+ * FROM tb_missoes
+ * WHERE ranking_da_missao = ?
+ *
+ * @param ranking Ranking utilizado como filtro.
+ * @return Lista de missões encontradas.
+ */
+    List<MissaoModel> findByRankingDaMissao(String ranking);
 }

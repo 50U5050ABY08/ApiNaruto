@@ -103,8 +103,8 @@ public class NinjaController {
  * @param nome Nome usado como filtro de busca.
  * @return Lista de ninjas encontrados em formato DTO.
  */
-@GetMapping("/buscar")
-public ResponseEntity<List<NinjaResponseDTO>> buscarPorNome(
+    @GetMapping("/buscar")
+    public ResponseEntity<List<NinjaResponseDTO>> buscarPorNome(
         @RequestParam String nome) {
 
     List<NinjaResponseDTO> ninjas =
@@ -135,8 +135,8 @@ public ResponseEntity<List<NinjaResponseDTO>> buscarPorNome(
  * @param email E-mail usado na busca.
  * @return Ninja encontrado em formato DTO.
  */
-@GetMapping("/email")
-public ResponseEntity<NinjaResponseDTO> buscarPorEmail(
+    @GetMapping("/email")
+    public ResponseEntity<NinjaResponseDTO> buscarPorEmail(
         @RequestParam String email) {
 
     NinjaResponseDTO ninja =
@@ -175,8 +175,8 @@ public ResponseEntity<NinjaResponseDTO> buscarPorEmail(
  * @param idade Idade usada como filtro.
  * @return Lista de ninjas encontrados em formato DTO.
  */
-@GetMapping("/idade")
-public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdade(
+    @GetMapping("/idade")
+    public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdade(
         @RequestParam int idade) {
 
     List<NinjaResponseDTO> ninjas =
@@ -209,8 +209,8 @@ public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdade(
  * @param idade Idade usada como referência.
  * @return Lista de ninjas com idade superior ao valor informado.
  */
-@GetMapping("/idade/maior")
-public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorQue(
+    @GetMapping("/idade/maior")
+    public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorQue(
         @RequestParam int idade) {
 
     List<NinjaResponseDTO> ninjas =
@@ -245,8 +245,8 @@ public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorQue(
  * @param idade Idade usada como referência.
  * @return Lista de ninjas com idade maior ou igual ao valor informado.
  */
-@GetMapping("/idade/maior-ou-igual")
-public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorOuIgual(
+    @GetMapping("/idade/maior-ou-igual")
+    public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorOuIgual(
         @RequestParam int idade) {
 
     List<NinjaResponseDTO> ninjas =
@@ -254,7 +254,108 @@ public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorOuIgual(
 
     return ResponseEntity.ok(ninjas);
 }
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS MAIORES QUE USANDO @QUERY
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar ninjas com idade maior que o valor informado,
+ * utilizando uma consulta JPQL escrita manualmente no Repository com @Query.
+ *
+ * Tradução:
+ *
+ * Query = consulta
+ *
+ * @Query permite escrever a consulta manualmente quando o nome do método
+ * começaria a ficar muito grande ou quando precisamos de mais controle.
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/query/maiores?idade=18
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade superior ao valor informado.
+ */
+    @GetMapping("/query/maiores")
+    public ResponseEntity<List<NinjaResponseDTO>> buscarMaioresQueComQuery(
+        @RequestParam int idade) {
 
+    List<NinjaResponseDTO> ninjas =
+            ninjaService.buscarMaioresQueComQuery(idade);
+
+    return ResponseEntity.ok(ninjas);
+}
+
+
+/**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MENOR QUE
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar ninjas cuja idade seja menor
+ * que o valor informado na URL.
+ *
+ * Tradução:
+ *
+ * less = menor
+ * than = que
+ *
+ * LessThan = menor que
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/idade/menor?idade=18
+ *
+ * Neste caso, serão retornados ninjas com idade menor que 18.
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade inferior ao valor informado.
+ */
+    @GetMapping("/idade/menor")
+    public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMenorQue(
+        @RequestParam int idade) {
+
+    List<NinjaResponseDTO> ninjas =
+            ninjaService.buscarPorIdadeMenorQue(idade);
+
+    return ResponseEntity.ok(ninjas);
+}
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MENOR OU IGUAL
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar ninjas cuja idade seja menor ou igual
+ * ao valor informado na URL.
+ *
+ * Tradução:
+ *
+ * less = menor
+ * than = que
+ * equal = igual
+ *
+ * LessThanEqual = menor ou igual
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/idade/menor-ou-igual?idade=18
+ *
+ * Neste caso, serão retornados ninjas com idade menor ou igual a 18.
+ *
+ * @param idade Idade usada como referência.
+ * @return Lista de ninjas com idade menor ou igual ao valor informado.
+ */
+    @GetMapping("/idade/menor-ou-igual")
+    public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMenorOuIgual(
+        @RequestParam int idade) {
+
+    List<NinjaResponseDTO> ninjas =
+            ninjaService.buscarPorIdadeMenorOuIgual(idade);
+
+    return ResponseEntity.ok(ninjas);
+}
 
     /**
     * ============================================================================
@@ -283,6 +384,41 @@ public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorOuIgual(
     return ResponseEntity.ok(ninja);
 
 }
+   
+   /**
+ * ============================================================================
+ * BUSCAR NINJAS PELO ID DA MISSÃO
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar todos os ninjas vinculados
+ * a uma missão específica.
+ *
+ * Este endpoint usa o relacionamento entre NinjaModel e MissaoModel.
+ *
+ * Tradução:
+ *
+ * missao = missão
+ * id = identificador
+ *
+ * Exemplo:
+ *
+ * GET /ninjas/missao/1
+ *
+ * Neste caso, serão retornados todos os ninjas que possuem
+ * a missão de ID 1.
+ *
+ * @param missaoId ID da missão.
+ * @return Lista de ninjas vinculados à missão informada.
+ */
+@GetMapping("/missao/{missaoId}")
+public ResponseEntity<List<NinjaResponseDTO>> buscarPorMissaoId(
+        @PathVariable Long missaoId) {
+
+    List<NinjaResponseDTO> ninjas =
+            ninjaService.buscarPorMissaoId(missaoId);
+
+    return ResponseEntity.ok(ninjas);
+}
 
 /**
  * ============================================================================
@@ -302,8 +438,8 @@ public ResponseEntity<List<NinjaResponseDTO>> buscarPorIdadeMaiorOuIgual(
  * @param ninja Dados enviados pelo cliente.
  * @return Ninja cadastrado com status HTTP 201 (Created).
  */
-@PostMapping
-public ResponseEntity<NinjaResponseDTO> salvarNinja(
+    @PostMapping
+    public ResponseEntity<NinjaResponseDTO> salvarNinja(
         @RequestBody @Valid NinjaRequestDTO ninja) {
 
     NinjaResponseDTO novoNinja = ninjaService.salvarNinja(ninja);
@@ -354,7 +490,7 @@ public ResponseEntity<NinjaResponseDTO> salvarNinja(
  * @return Ninja atualizado em formato DTO com status HTTP 200 (OK).
  */
     @PutMapping("/{id}")
-public ResponseEntity<NinjaResponseDTO> atualizarNinja(
+    public ResponseEntity<NinjaResponseDTO> atualizarNinja(
         @PathVariable Long id,
         @RequestBody @Valid NinjaRequestDTO ninjaDTO) {
 

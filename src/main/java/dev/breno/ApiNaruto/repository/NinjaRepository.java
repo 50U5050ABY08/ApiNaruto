@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
     @Repository
     public interface NinjaRepository extends JpaRepository<NinjaModel, Long> {
@@ -220,5 +222,122 @@ import java.util.Optional;
  * @return Lista de ninjas encontrados.
  */
     List<NinjaModel> findByIdadeGreaterThanEqual(int idade);
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MENOR QUE
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * idade = idade
+ * less = menor
+ * than = que
+ *
+ * findByIdadeLessThan
+ *
+ * Encontrar ninjas com idade inferior ao valor informado.
+ *
+ * SQL aproximado:
+ *
+ * SELECT *
+ * FROM tb_cadastro
+ * WHERE idade < ?
+ *
+ * @param idade Idade utilizada como referência.
+ * @return Lista de ninjas encontrados.
+ */
+    List<NinjaModel> findByIdadeLessThan(int idade);
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS COM IDADE MENOR OU IGUAL
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * idade = idade
+ * less = menor
+ * than = que
+ * equal = igual
+ *
+ * findByIdadeLessThanEqual
+ *
+ * Encontrar ninjas com idade menor ou igual ao valor informado.
+ *
+ * SQL aproximado:
+ *
+ * SELECT *
+ * FROM tb_cadastro
+ * WHERE idade <= ?
+ *
+ * @param idade Idade utilizada como referência.
+ * @return Lista de ninjas encontrados.
+ */
+    List<NinjaModel> findByIdadeLessThanEqual(int idade);
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS MAIORES QUE UTILIZANDO JPQL
+ * ============================================================================
+ *
+ * Esta consulta é escrita manualmente utilizando JPQL.
+ *
+ * Tradução:
+ *
+ * SELECT = selecionar
+ * FROM = de
+ * WHERE = onde
+ *
+ * n = apelido (alias) da entidade NinjaModel
+ *
+ * :idade = parâmetro nomeado
+ *
+ * @param idade Idade utilizada como referência.
+ * @return Lista de ninjas encontrados.
+ */
+    @Query("""
+           SELECT n
+           FROM NinjaModel n
+           WHERE n.idade > :idade
+           """)
+    List<NinjaModel> buscarNinjasMaioresQue (@Param("idade") int idade);
+    
+    /**
+ * ============================================================================
+ * BUSCAR NINJAS PELO ID DA MISSÃO
+ * ============================================================================
+ *
+ * Tradução:
+ *
+ * find = encontrar
+ * by = por
+ * missao = missão
+ * id = identificador
+ *
+ * findByMissaoId
+ *
+ * O Spring navega automaticamente pelo relacionamento:
+ *
+ * NinjaModel
+ *     ↓
+ * MissaoModel
+ *     ↓
+ * id
+ *
+ * SQL aproximado:
+ *
+ * SELECT *
+ * FROM tb_cadastro
+ * WHERE missoes_id = ?
+ *
+ * @param id ID da missão.
+ * @return Lista de ninjas da missão.
+ */
+    List<NinjaModel> findByMissaoId(Long id);
 
 }

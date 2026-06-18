@@ -1,6 +1,5 @@
 package dev.breno.ApiNaruto.controller;
 
-import dev.breno.ApiNaruto.model.MissaoModel;
 import dev.breno.ApiNaruto.service.MissaoService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -60,12 +59,48 @@ public class MissaoController {
     MissaoResponseDTO missao = missaoService.buscarMissaoPorId(id);
     return ResponseEntity.ok(missao);
 }
+    
+    /**
+ * ============================================================================
+ * BUSCAR MISSÕES POR RANKING
+ * ============================================================================
+ *
+ * Endpoint responsável por buscar missões utilizando o ranking como filtro.
+ *
+ * Tradução:
+ *
+ * RequestParam:
+ * Request = requisição
+ * Param = parâmetro
+ *
+ * @RequestParam captura o valor enviado na URL.
+ *
+ * Exemplo:
+ *
+ * GET /missoes/ranking?ranking=Rank A
+ *
+ * Neste caso:
+ *
+ * ranking = Rank A
+ *
+ * @param ranking Ranking usado como filtro.
+ * @return Lista de missões encontradas em formato DTO.
+ */
+@GetMapping("/ranking")
+public ResponseEntity<List<MissaoResponseDTO>> buscarPorRanking(
+        @RequestParam String ranking) {
+
+    List<MissaoResponseDTO> missoes =
+            missaoService.buscarPorRanking(ranking);
+
+    return ResponseEntity.ok(missoes);
+}
 
     /**
      * POST /missoes
      * Cria uma nova missão de forma segura.
      * 
-     * @param missao Dados da missão a ser criada.
+     * @param missaoDTO
      * @return Missão criada com status 201 Created.
      */
     @PostMapping
