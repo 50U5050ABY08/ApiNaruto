@@ -445,6 +445,27 @@ import java.util.List;
                 "Missão não encontrada."
         ));
         
+        /**
+ * ============================================================================
+ * REGRA DE NEGÓCIO - IDADE MÍNIMA PARA MISSÃO RANK A
+ * ============================================================================
+ *
+ * Regra:
+ *
+ * Ninjas menores de 18 anos não podem participar de missões Rank A.
+ *
+ * Esta validação fica no Service porque não é apenas uma validação de formato,
+ * mas sim uma regra do sistema.
+ */
+    if (ninjaDTO.getIdade() < 18
+        && missao.getRankingDaMissao().equalsIgnoreCase("A")) {
+
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Ninjas menores de 18 anos não podem participar de missões Rank A."
+        );
+    }
+        
         ninja.setMissao(missao);
         
         // Salva no banco
