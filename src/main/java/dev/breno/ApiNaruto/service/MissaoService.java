@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import dev.breno.ApiNaruto.dto.MissaoResponseDTO;
 import dev.breno.ApiNaruto.dto.MissaoRequestDTO;
+import dev.breno.ApiNaruto.exception.MissaoNaoEncontradaException;
 import dev.breno.ApiNaruto.mapper.MissaoMapper;
 import dev.breno.ApiNaruto.repository.MissaoRepository;
 /**
@@ -173,9 +174,7 @@ public class MissaoService {
     private MissaoModel buscarEntidadePorId(Long id) {
 
         return missaoRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Missão não encontrada com o ID: " + id));
+            .orElseThrow(() -> new MissaoNaoEncontradaException(id));
     }
     
     

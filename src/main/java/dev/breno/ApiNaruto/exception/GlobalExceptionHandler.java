@@ -1,5 +1,6 @@
 package dev.breno.ApiNaruto.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,5 +112,40 @@ public class GlobalExceptionHandler {
         ex.printStackTrace();
         
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+    
+    /**
+     * =========================================================================
+     * TRATAMENTO DE MISSÃO NÃO ENCONTRADA
+     * =========================================================================
+     * 
+     * Captura a exceção personalizada MissaNaoEncontradaException
+     * lançada pela camada Service.
+     * 
+     * O Service não precisa mais conhecer diretamente HTTP 404.
+     * Ele apenas informa que a missão não foi encontrada.
+     * 
+     * o Handler transforma essa exceção em uma resposta HTTP padronizada.
+     * 
+     * @param ex Exceção personalizada capturada.
+     * @param request Requisição HTTP que originou o erro.
+     * @return Resposta de erro padronizada com status 404.
+     */
+    @ExceptionHandler(MissaoNaoEncontradaException.class)
+    public ResponseEntity<ErrorResponse> handleMissaoNaoEncontradaException(
+            MissaoNaoEncontradaException ex,
+            HttpServletRequest request) {
+        
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.toString(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
     }
 }
