@@ -186,4 +186,52 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(response);
     }
+    
+    /**
+ * ============================================================================
+ * TRATAMENTO DE USUÁRIO NÃO ENCONTRADO
+ * ============================================================================
+ *
+ * Captura a exceção personalizada UsuarioNaoEncontradoException
+ * lançada quando um usuário não é encontrado no banco.
+ *
+ * @param ex Exceção personalizada capturada.
+ * @param request Requisição HTTP que originou o erro.
+ * @return Resposta de erro padronizada com status 404.
+ */
+    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> handleUsuarioNaoEncontradoException(
+        UsuarioNaoEncontradoException ex,
+        HttpServletRequest request) {
+
+    ErrorResponse response = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.NOT_FOUND.value(),
+            HttpStatus.NOT_FOUND.toString(),
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(response);
+    }
+    
+    @ExceptionHandler(CredenciaisInvalidasException.class)
+    public ResponseEntity<ErrorResponse> handleCredenciaisInvalidasException(
+        CredenciaisInvalidasException ex,
+        HttpServletRequest request) {
+
+    ErrorResponse response = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.UNAUTHORIZED.value(),
+            HttpStatus.UNAUTHORIZED.toString(),
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+
+    return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(response);
+    }
 }
