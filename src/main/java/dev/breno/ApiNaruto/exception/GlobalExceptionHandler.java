@@ -148,4 +148,42 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(response);
     }
+    
+    /**
+ * ============================================================================
+ * TRATAMENTO DE REGRA DE NEGÓCIO
+ * ============================================================================
+ *
+ * Captura exceções lançadas quando alguma regra do sistema é violada.
+ *
+ * Exemplo:
+ *
+ * Ninja menor de 18 anos tentando participar de uma missão Rank A.
+ *
+ * Tradução:
+ *
+ * Business Rule = Regra de Negócio
+ * Bad Request = Requisição inválida
+ *
+ * @param ex Exceção de regra de negócio capturada.
+ * @param request Requisição HTTP que originou o erro.
+ * @return Resposta de erro padronizada com status 400.
+ */
+    @ExceptionHandler(RegraDeNegocioException.class)
+    public ResponseEntity<ErrorResponse> handleRegraDeNegocioException(
+        RegraDeNegocioException ex,
+        HttpServletRequest request) {
+
+    ErrorResponse response = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.BAD_REQUEST.value(),
+            HttpStatus.BAD_REQUEST.toString(),
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(response);
+    }
 }

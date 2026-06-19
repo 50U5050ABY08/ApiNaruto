@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import dev.breno.ApiNaruto.dto.NinjaResponseDTO;
+import dev.breno.ApiNaruto.exception.RegraDeNegocioException;
 import dev.breno.ApiNaruto.mapper.NinjaMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -457,14 +458,13 @@ import java.util.List;
  * Esta validação fica no Service porque não é apenas uma validação de formato,
  * mas sim uma regra do sistema.
  */
-    if (ninjaDTO.getIdade() < 18
+   if (ninjaDTO.getIdade() < 18
         && missao.getRankingDaMissao().equalsIgnoreCase("A")) {
 
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
+    throw new RegraDeNegocioException(
             "Ninjas menores de 18 anos não podem participar de missões Rank A."
-        );
-    }
+    );
+}
         
         ninja.setMissao(missao);
         
