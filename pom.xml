@@ -77,6 +77,11 @@
 	  <scope>compile</scope>
 	  <type>jar</type>
 	 </dependency>
+         <!-- Spring Security: adiciona a camada de segurança da aplicação -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
