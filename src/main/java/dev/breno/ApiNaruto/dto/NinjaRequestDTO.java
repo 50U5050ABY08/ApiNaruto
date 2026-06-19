@@ -8,6 +8,7 @@ package dev.breno.ApiNaruto.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,8 +62,9 @@ public class NinjaRequestDTO {
      * Idade do ninja.
      * Deve ser maior que zero.
      */
+    @NotNull(message = "A idade é obrigatória")
     @Min(value = 1, message = "A idade deve ser maior que zero")
-    private int idade;
+    private Integer idade;
 
     /**
      * ID da missão que será associada ao ninja.
@@ -71,6 +73,7 @@ public class NinjaRequestDTO {
      * Enviamos apenas o ID da missão, e não o objeto completo,
      * tornando a comunicação da API mais simples e eficiente.
      */
+    @NotNull(message = "O ID da missão é obrigatório")
     private Long missaoId;
 }
 
