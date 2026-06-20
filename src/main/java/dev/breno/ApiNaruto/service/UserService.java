@@ -78,6 +78,10 @@ public class UserService {
             throw new CredenciaisInvalidasException();
         }
 
-        return new AuthResponseDTO("LOGIN_REALIZADO_COM_SUCESSO");
+        String token = jwtService.gerarToken(user.getUsername());
+
+        return new AuthResponseDTO(token);
     }
+    
+        private final JwtService jwtService;
 }
