@@ -13,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import dev.breno.ApiNaruto.dto.NinjaResponseDTO;
 import dev.breno.ApiNaruto.dto.NinjaRequestDTO;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
 /**
  * ============================================================================
@@ -67,9 +69,11 @@ public class NinjaController {
      *                 parâmetros enviados na URL.
      * @return Página de ninjas em formato DTO.
      */
-    @GetMapping
-    public ResponseEntity<Page<NinjaResponseDTO>> listarNinjas(
-            Pageable pageable) {
+   @GetMapping
+public ResponseEntity<Page<NinjaResponseDTO>> listarNinjas(
+        @ParameterObject
+        @PageableDefault(size = 20, sort = "nome")
+        Pageable pageable) {
 
     Page<NinjaResponseDTO> ninjas =
             ninjaService.listarNinjas(pageable);

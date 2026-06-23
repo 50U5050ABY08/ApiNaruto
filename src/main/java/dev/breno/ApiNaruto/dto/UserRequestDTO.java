@@ -20,7 +20,6 @@ import lombok.Setter;
  * Register = cadastrar
  * User = usuário
  * Password = senha
- * Role = função/papel
  */
 @Getter
 @Setter
@@ -31,7 +30,4 @@ public class UserRequestDTO {
 
     @NotBlank(message = "A senha é obrigatória")
     private String password;
-
-    @NotBlank(message = "A role é obrigatória")
-    private String role;
 }

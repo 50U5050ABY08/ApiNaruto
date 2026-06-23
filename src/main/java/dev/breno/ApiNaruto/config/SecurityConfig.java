@@ -38,10 +38,17 @@ public SecurityFilterChain securityFilterChain(
                     )
             )
 
-            .authorizeHttpRequests(auth -> auth
+                        .authorizeHttpRequests(auth -> auth
 
-                    // Cadastro e login continuam públicos.
+                    // Login e cadastro são públicos.
                     .requestMatchers("/auth/**").permitAll()
+
+                    // Documentação Swagger é pública.
+                    .requestMatchers(
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/v3/api-docs/**"
+                    ).permitAll()
 
                     // Somente administradores podem excluir ninjas.
                     .requestMatchers(
@@ -49,7 +56,7 @@ public SecurityFilterChain securityFilterChain(
                             "/ninjas/**"
                     ).hasAuthority("ROLE_ADMIN")
 
-                    // Qualquer outra rota exige autenticação.
+                    // As demais rotas precisam de JWT.
                     .anyRequest().authenticated()
             )
 
