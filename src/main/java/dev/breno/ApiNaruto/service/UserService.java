@@ -52,8 +52,9 @@ public class UserService {
     user.setPassword(
             passwordEncoder.encode(userDTO.getPassword())
     );
-
-    user.setRole(userDTO.getRole());
+    
+// Todo cadastro realizado pela rota pública recebe perfil comum.
+    user.setRole("ROLE_USER");
 
     UserModel userSalvo = userRepository.save(user);
 
