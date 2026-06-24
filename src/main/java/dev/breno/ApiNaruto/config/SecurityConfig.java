@@ -5,6 +5,7 @@
 package dev.breno.ApiNaruto.config;
 
 import dev.breno.ApiNaruto.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ public SecurityFilterChain securityFilterChain(
         HttpSecurity http) throws Exception {
 
     http
+            
             .csrf(AbstractHttpConfigurer::disable)
 
             // Não cria sessão no servidor.
@@ -59,6 +61,25 @@ public SecurityFilterChain securityFilterChain(
                     // As demais rotas precisam de JWT.
                     .anyRequest().authenticated()
             )
+            
+            .exceptionHandling(exception -> exception
+
+        // Sem autenticação ou token:
+        .authenticationEntryPoint(
+                (request, response, authException) ->
+                        response.setStatus(
+                                HttpServletResponse.SC_UNAUTHORIZED
+                        )
+        )
+
+        // Autenticado, mas sem permissão:
+        .accessDeniedHandler(
+                (request, response, accessDeniedException) ->
+                        response.setStatus(
+                                HttpServletResponse.SC_FORBIDDEN
+                        )
+        )
+)
 
             // Não usaremos login por formulário nem HTTP Basic.
             .httpBasic(AbstractHttpConfigurer::disable)
