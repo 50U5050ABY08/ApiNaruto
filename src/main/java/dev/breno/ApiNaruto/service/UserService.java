@@ -34,14 +34,17 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UserModel buscarPorUsername(String username) {
-
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsuarioNaoEncontradoException(username));  
+                .orElseThrow(
+                        () -> new UsuarioNaoEncontradoException(username)
+                );
     }
+
     
-    private final PasswordEncoder passwordEncoder;
     
     public UserResponseDTO cadastrarUsuario(UserRequestDTO userDTO) {
 
@@ -83,6 +86,5 @@ public class UserService {
 
         return new AuthResponseDTO(token);
     }
-    
-        private final JwtService jwtService;
+
 }
