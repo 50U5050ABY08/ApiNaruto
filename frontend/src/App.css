@@ -1,0 +1,15 @@
+main {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
