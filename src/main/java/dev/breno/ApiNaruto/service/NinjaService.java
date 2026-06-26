@@ -458,13 +458,10 @@ import java.util.List;
  * Esta validação fica no Service porque não é apenas uma validação de formato,
  * mas sim uma regra do sistema.
  */
-   if (ninjaDTO.getIdade() < 18
-        && missao.getRankingDaMissao().equalsIgnoreCase("A")) {
-
-    throw new RegraDeNegocioException(
-            "Ninjas menores de 18 anos não podem participar de missões Rank A."
-    );
-}
+        validarIdadeParaMissao(
+             ninjaDTO.getIdade(),
+             missao
+        );
         
         ninja.setMissao(missao);
         
@@ -555,6 +552,11 @@ import java.util.List;
                        HttpStatus.NOT_FOUND,
                        "Missão não encontrada."
                ));
+       
+       validarIdadeParaMissao(
+        ninjaDTO.getIdade(),
+        missao
+        );
 
        /**
         * Associa a missão encontrada ao ninja.
@@ -600,5 +602,26 @@ import java.util.List;
                 .stream()
                 .map(NinjaMapper::toResponseDTO)
                 .toList();
+    }
+    
+    /**
+ * Valida se a idade do ninja permite participar da missão.
+ *
+ * Ninjas menores de 18 anos não podem participar
+ * de missões com ranking A.
+ */
+private void validarIdadeParaMissao(
+        Integer idade,
+        MissaoModel missao) {
+
+    if (idade < 18
+                && "A".equalsIgnoreCase(
+                        missao.getRankingDaMissao()
+                )) {
+
+                throw new RegraDeNegocioException(
+                        "Ninjas menores de 18 anos não podem participar de missões Rank A."
+            );
+        }
     }
 }

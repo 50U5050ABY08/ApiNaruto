@@ -192,4 +192,39 @@ class NinjaServiceTest {
 
         return request;
     }
+    
+    @Test
+    void deveImpedirAtualizacaoDeMenorParaMissaoRankA() {
+
+        NinjaModel ninjaExistente = new NinjaModel();
+        ninjaExistente.setId(1L);
+        ninjaExistente.setNome("Konohamaru");
+        ninjaExistente.setEmail("konohamaru@konoha.com");
+        ninjaExistente.setIdade(12);
+
+        NinjaRequestDTO request = criarRequest(
+                "Konohamaru",
+                "konohamaru@konoha.com",
+                12,
+                10L
+        );
+
+        MissaoModel missaoRankA = new MissaoModel();
+        missaoRankA.setRankingDaMissao("A");
+
+        when(ninjaRepository.findById(1L))
+                .thenReturn(Optional.of(ninjaExistente));
+
+        when(missaoRepository.findById(10L))
+                .thenReturn(Optional.of(missaoRankA));
+
+        assertThatThrownBy(
+                () -> ninjaService.atualizarNinja(1L, request)
+        )
+                .isInstanceOf(RegraDeNegocioException.class)
+                .hasMessageContaining("menores de 18 anos");
+
+        verify(ninjaRepository, never())
+                .save(any(NinjaModel.class));
+        }
 }
