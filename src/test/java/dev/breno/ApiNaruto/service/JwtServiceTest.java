@@ -8,6 +8,8 @@ import dev.breno.ApiNaruto.service.JwtService;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import dev.breno.ApiNaruto.config.JwtProperties;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,7 +20,19 @@ class JwtServiceTest {
 
     @BeforeEach
     void prepararTeste() {
-        jwtService = new JwtService();
+
+        JwtProperties jwtProperties =
+                new JwtProperties();
+
+        jwtProperties.setSecret(
+                "chave-exclusiva-de-testes-com-tamanho-seguro-12345678901234567890"
+        );
+
+        jwtProperties.setExpiration(
+            Duration.ofHours(1)
+        );
+
+        jwtService = new JwtService(jwtProperties);
     }
 
     @Test

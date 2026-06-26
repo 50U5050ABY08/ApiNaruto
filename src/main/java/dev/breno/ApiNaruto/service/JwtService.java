@@ -4,13 +4,17 @@
  */
 package dev.breno.ApiNaruto.service;
 
+import dev.breno.ApiNaruto.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Date;
 import javax.crypto.SecretKey;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 
 /**
  * ============================================================================
@@ -26,85 +30,66 @@ import org.springframework.stereotype.Service;
  * Claims = Informações armazenadas no token
  */
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
-    /**
-     * Chave secreta utilizada para assinar os tokens.
-     *
-     * Em produção essa chave ficará em variáveis de ambiente.
-     */
-    private static final String SECRET_KEY =
-            "minha-chave-secreta-super-segura-para-api-naruto-2026";
+    private final JwtProperties jwtProperties;
 
     public String gerarToken(String username) {
 
-        SecretKey key = Keys.hmacShaKeyFor(
-                SECRET_KEY.getBytes(StandardCharsets.UTF_8)
+        Date agora = new Date();
+
+        Date expiracao = Date.from(
+                Instant.now().plus(
+                        jwtProperties.getExpiration()
+                )
         );
 
         return Jwts.builder()
                 .subject(username)
-                .issuedAt(new Date())
-                .expiration(
-                        new Date(
-                                System.currentTimeMillis()
-                                + 1000 * 60 * 60
-                        )
-                )
-                .signWith(key)
+                .issuedAt(agora)
+                .expiration(expiracao)
+                .signWith(obterChave())
                 .compact();
     }
-    
-    /**
- * Extrai o username (subject) do token.
-     * @param token
-     * @return 
- */
-public String extrairUsername(String token) {
 
-    return extrairClaims(token).getSubject();
-}
-
-/**
- * Extrai todas as claims do token.
- */
-private Claims extrairClaims(String token) {
-
-    SecretKey key = Keys.hmacShaKeyFor(
-            SECRET_KEY.getBytes(StandardCharsets.UTF_8)
-        );
-
-        return Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
+    public String extrairUsername(String token) {
+        return extrairClaims(token).getSubject();
     }
 
-        /**
- * Verifica se o token pertence ao usuário informado
- * e se ainda não expirou.
-     * @param token
-     * @param username
-     * @return 
- */
-public boolean tokenValido(
-        String token,
-        String username) {
+    public boolean tokenValido(
+            String token,
+            String username) {
 
-    String usernameToken = extrairUsername(token);
+        String usernameToken =
+                extrairUsername(token);
 
         return usernameToken.equals(username)
-            && !tokenExpirado(token);
+                && !tokenExpirado(token);
     }
 
-        /**
- * Verifica se o token já expirou.
- */
-private boolean tokenExpirado(String token) {
+    private boolean tokenExpirado(String token) {
 
         return extrairClaims(token)
-            .getExpiration()
-            .before(new Date());
+                .getExpiration()
+                .before(new Date());
+    }
+
+    private Claims extrairClaims(String token) {
+
+        return Jwts.parser()
+                .verifyWith(obterChave())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    private SecretKey obterChave() {
+
+        return Keys.hmacShaKeyFor(
+                jwtProperties
+                        .getSecret()
+                        .getBytes(StandardCharsets.UTF_8)
+        );
     }
 }
