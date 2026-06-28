@@ -9,41 +9,89 @@ interface Ninja {
   missao: string | null
 }
 
+interface AuthResponse {
+  token: string
+}
+
 function App() {
+  const apiUrl = import.meta.env.VITE_API_URL
   const titulo: string = 'API Naruto'
 
+  const [username, setUsername] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+
+  const [token, setToken] = useState<string>('')
   const [mensagem, setMensagem] = useState<string>(
-    'Clique no botão para listar os ninjas.'
+    'Faça login para acessar os ninjas.'
   )
 
   const [ninjas, setNinjas] = useState<Ninja[]>([])
 
+  async function fazerLogin() {
+    setMensagem('Realizando login...')
+
+    try {
+      const resposta = await fetch(`${apiUrl}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      })
+
+      if (!resposta.ok) {
+        setMensagem(`Erro no login. Status: ${resposta.status}`)
+        return
+      }
+
+      const dados: AuthResponse = await resposta.json()
+
+      setToken(dados.token)
+      setMensagem('Login realizado com sucesso.')
+    } catch (erro) {
+      console.error('Erro ao fazer login:', erro)
+      setMensagem('Erro de conexão com a API ao fazer login.')
+    }
+  }
+
   async function listarNinjas() {
-  setMensagem('Buscando ninjas da API...')
-
-  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c3VhcmlvMiIsImlhdCI6MTc4MjUxNzY3NSwiZXhwIjoxNzgyNTIxMjc1fQ.6Ny1XJEprsj5NybQbT7eXrztQOTf44wQ5mbZzJIrdX8fUl0m2FdJOQiy25h-8pBRcYRS9Haqo7BoI3Kimnf78g'
-
-  try {
-    const resposta = await fetch('http://localhost:8080/ninjas', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-
-    if (!resposta.ok) {
-      setMensagem(`Erro ao buscar ninjas. Status: ${resposta.status}`)
+    if (!token) {
+      setMensagem('Você precisa fazer login antes de listar os ninjas.')
       return
     }
 
-    const dados = await resposta.json()
+    setMensagem('Buscando ninjas da API...')
 
-    setNinjas(dados.content)
-    setMensagem('Ninjas carregados com sucesso.')
-  } catch (erro) {
-    console.error('Erro ao conectar com a API:', erro)
-    setMensagem('Erro de conexão com a API. Verifique o backend ou CORS.')
+    try {
+      const resposta = await fetch(`${apiUrl}/ninjas`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!resposta.ok) {
+        setMensagem(`Erro ao buscar ninjas. Status: ${resposta.status}`)
+        return
+      }
+
+      const dados = await resposta.json()
+
+      setNinjas(dados.content)
+      setMensagem('Ninjas carregados com sucesso.')
+    } catch (erro) {
+      console.error('Erro ao conectar com a API:', erro)
+      setMensagem('Erro de conexão com a API. Verifique o backend ou CORS.')
+    }
   }
-}
+
+  function sair() {
+    setToken('')
+    setNinjas([])
+    setMensagem('Você saiu da aplicação.')
+  }
 
   return (
     <main>
@@ -53,19 +101,50 @@ function App() {
         Front-end desenvolvido com React e TypeScript.
       </p>
 
-      <button onClick={listarNinjas}>
-        Listar ninjas
-      </button>
+      <section>
+        <h2>Login</h2>
 
-      <p>{mensagem}</p>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+        />
 
-      <ul>
-        {ninjas.map((ninja) => (
-          <li key={ninja.id}>
-            {ninja.nome} - {ninja.idade} anos - Missão: {ninja.missao ?? 'Sem missão'}
-          </li>
-        ))}
-      </ul>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+
+        <button onClick={fazerLogin}>
+          Entrar
+        </button>
+
+        <button onClick={sair}>
+          Sair
+        </button>
+      </section>
+
+      <section>
+        <h2>Ninjas</h2>
+
+        <button onClick={listarNinjas}>
+          Listar ninjas
+        </button>
+
+        <p>{mensagem}</p>
+
+        <ul>
+          {ninjas.map((ninja) => (
+            <li key={ninja.id}>
+              {ninja.nome} - {ninja.idade} anos - Missão:{' '}
+              {ninja.missao ?? 'Sem missão'}
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
   )
 }
