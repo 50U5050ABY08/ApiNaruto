@@ -1,20 +1,10 @@
 import { useState } from 'react'
 import './App.css'
-
-interface Ninja {
-  id: number
-  nome: string
-  email: string
-  idade: number
-  missao: string | null
-}
-
-interface AuthResponse {
-  token: string
-}
+import { login } from './services/authService'
+import { buscarNinjas } from './services/ninjaService.ts'
+import type { Ninja } from './types/ninja'
 
 function App() {
-  const apiUrl = import.meta.env.VITE_API_URL
   const titulo: string = 'API Naruto'
 
   const [username, setUsername] = useState<string>('')
@@ -22,7 +12,7 @@ function App() {
 
   const [token, setToken] = useState<string>('')
   const [mensagem, setMensagem] = useState<string>(
-    'Faça login para acessar os ninjas.'
+    'Faça login para acessar os ninjas.',
   )
 
   const [ninjas, setNinjas] = useState<Ninja[]>([])
@@ -31,29 +21,16 @@ function App() {
     setMensagem('Realizando login...')
 
     try {
-      const resposta = await fetch(`${apiUrl}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
+      const response = await login({
+        username,
+        password,
       })
 
-      if (!resposta.ok) {
-        setMensagem(`Erro no login. Status: ${resposta.status}`)
-        return
-      }
-
-      const dados: AuthResponse = await resposta.json()
-
-      setToken(dados.token)
+      setToken(response.token)
       setMensagem('Login realizado com sucesso.')
-    } catch (erro) {
-      console.error('Erro ao fazer login:', erro)
-      setMensagem('Erro de conexão com a API ao fazer login.')
+    } catch (error) {
+      console.error(error)
+      setMensagem('Usuário ou senha inválidos.')
     }
   }
 
@@ -66,30 +43,21 @@ function App() {
     setMensagem('Buscando ninjas da API...')
 
     try {
-      const resposta = await fetch(`${apiUrl}/ninjas`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const ninjasEncontrados = await buscarNinjas(token)
 
-      if (!resposta.ok) {
-        setMensagem(`Erro ao buscar ninjas. Status: ${resposta.status}`)
-        return
-      }
-
-      const dados = await resposta.json()
-
-      setNinjas(dados.content)
+      setNinjas(ninjasEncontrados)
       setMensagem('Ninjas carregados com sucesso.')
-    } catch (erro) {
-      console.error('Erro ao conectar com a API:', erro)
-      setMensagem('Erro de conexão com a API. Verifique o backend ou CORS.')
+    } catch (error) {
+      console.error(error)
+      setMensagem('Erro ao buscar ninjas.')
     }
   }
 
   function sair() {
     setToken('')
     setNinjas([])
+    setUsername('')
+    setPassword('')
     setMensagem('Você saiu da aplicação.')
   }
 
@@ -150,3 +118,32 @@ function App() {
 }
 
 export default App
+
+/**atualização do código
+ * 
+ * ANTES:
+ * App.tsx
+→ tela
+→ login
+→ fetch
+→ regra de chamada da API
+→ tipo Ninja
+→ tipo AuthResponse
+===================================================================================
+
+AGORA:
+App.tsx
+→ controla a tela
+
+authService.ts
+→ faz login
+
+ninjaService.ts
+→ busca ninjas
+
+types/
+→ guarda os contratos TypeScript
+
+api.ts
+→ guarda a URL base da API
+ */
