@@ -55,6 +55,27 @@ export async function deletarNinja(
   }
 }
 
+export async function atualizarNinja(
+  token: string,
+  ninjaId: number,
+  ninjaRequest: NinjaRequest,
+): Promise<Ninja> {
+  const response = await fetch(`${API_URL}/ninjas/${ninjaId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(ninjaRequest),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Erro ao atualizar ninja. Status: ${response.status}`)
+  }
+
+  return response.json()
+}
+
 /**ESSE SERVICE FAZ:
  * 
  * Recebe token

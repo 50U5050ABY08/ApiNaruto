@@ -5,13 +5,12 @@ import NinjaForm from './components/NinjaForm'
 import NinjaList from './components/NinjaList'
 import { login } from './services/authService'
 import { buscarMissoes } from './services/missaoService'
-import { buscarNinjas, criarNinja, deletarNinja } from './services/ninjaService'
+import { atualizarNinja, buscarNinjas, criarNinja, deletarNinja } from './services/ninjaService'
 import type { Missao } from './types/missao'
 import type { Ninja, NinjaRequest } from './types/ninja'
 
 
 function App() {
-
   const [missoes, setMissoes] = useState<Missao[]>([])
   
   const titulo: string = 'API Naruto'
@@ -26,10 +25,57 @@ function App() {
   )
 
   const [ninjas, setNinjas] = useState<Ninja[]>([])
+  const [ninjaEmEdicao, setNinjaEmEdicao] = useState<Ninja | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const isAuthenticated = token.length > 0
   const isAdmin = role === 'ROLE_ADMIN'
+
+  function editarNinja(ninja: Ninja) {
+  setNinjaEmEdicao(ninja)
+  setMensagem(`Editando ninja: ${ninja.nome}`)
+}
+
+function cancelarEdicao() {
+  setNinjaEmEdicao(null)
+  setMensagem('Edição cancelada.')
+}
+
+async function atualizarNinjaSelecionado(
+  ninjaRequest: NinjaRequest,
+) {
+  if (!token || !ninjaEmEdicao) {
+    setMensagem('Você precisa selecionar um ninja para atualizar.')
+    return
+  }
+
+  setMensagem('Atualizando ninja...')
+  setIsLoading(true)
+
+  try {
+    const ninjaAtualizado = await atualizarNinja(
+      token,
+      ninjaEmEdicao.id,
+      ninjaRequest,
+    )
+
+    setNinjas((ninjasAtuais) =>
+      ninjasAtuais.map((ninja) =>
+        ninja.id === ninjaAtualizado.id
+          ? ninjaAtualizado
+          : ninja,
+      ),
+    )
+
+    setNinjaEmEdicao(null)
+    setMensagem('Ninja atualizado com sucesso.')
+  } catch (error) {
+    console.error(error)
+    setMensagem('Erro ao atualizar ninja. Verifique os dados informados.')
+  } finally {
+    setIsLoading(false)
+  }
+}
 
   async function fazerLogin() {
     if (!username || !password) {
@@ -96,6 +142,7 @@ setMensagem('Login realizado com sucesso.')
     setToken('')
     setRole('')
     setNinjas([])
+    setNinjaEmEdicao(null)
     setUsername('')
     setPassword('')
     setMensagem('Você saiu da aplicação.')
@@ -151,6 +198,10 @@ async function excluirNinja(ninjaId: number) {
       ninjasAtuais.filter((ninja) => ninja.id !== ninjaId),
     )
 
+    if (ninjaEmEdicao?.id === ninjaId) {
+  setNinjaEmEdicao(null)
+    }
+
     setMensagem('Ninja excluído com sucesso.')
   } catch (error) {
     console.error(error)
@@ -184,12 +235,15 @@ async function excluirNinja(ninjaId: number) {
         onLogout={sair}
       />
 
-      <NinjaForm
+   <NinjaForm
   missoes={missoes}
+  ninjaEmEdicao={ninjaEmEdicao}
   isAuthenticated={isAuthenticated}
   isLoading={isLoading}
   onCriarNinja={cadastrarNinja}
-      />
+  onAtualizarNinja={atualizarNinjaSelecionado}
+  onCancelarEdicao={cancelarEdicao}
+/>
 
       <NinjaList
   ninjas={ninjas}
@@ -198,6 +252,7 @@ async function excluirNinja(ninjaId: number) {
   isAdmin={isAdmin}
   isLoading={isLoading}
   onListarNinjas={listarNinjas}
+  onEditarNinja={editarNinja}
   onExcluirNinja={excluirNinja}
 />
     </div>

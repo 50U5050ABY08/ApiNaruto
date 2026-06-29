@@ -7,6 +7,7 @@ interface NinjaListProps {
   isAdmin: boolean
   isLoading: boolean
   onListarNinjas: () => void
+  onEditarNinja: (ninja: Ninja) => void
   onExcluirNinja: (ninjaId: number) => void
 }
 
@@ -17,6 +18,7 @@ function NinjaList({
   isAdmin,
   isLoading,
   onListarNinjas,
+  onEditarNinja,
   onExcluirNinja,
 }: NinjaListProps) {
   return (
@@ -44,7 +46,7 @@ function NinjaList({
                 <th>E-mail</th>
                 <th>Idade</th>
                 <th>Missão</th>
-                {isAdmin && <th>Ações</th>}
+                <th>Ações</th>
               </tr>
             </thead>
 
@@ -55,18 +57,27 @@ function NinjaList({
                   <td>{ninja.email}</td>
                   <td>{ninja.idade}</td>
                   <td>{ninja.missao ?? 'Sem missão'}</td>
-                  
-                  {isAdmin && (
-                    <td>
+                  <td>
+                    <div className="table-actions">
                       <button
-                        className="button button-danger"
-                        onClick={() => onExcluirNinja(ninja.id)}
+                        className="button button-secondary"
+                        onClick={() => onEditarNinja(ninja)}
                         disabled={isLoading}
                       >
-                      Excluir
-                    </button>
+                        Editar
+                      </button>
+
+                      {isAdmin && (
+                        <button
+                          className="button button-danger"
+                          onClick={() => onExcluirNinja(ninja.id)}
+                          disabled={isLoading}
+                        >
+                          Excluir
+                        </button>
+                      )}
+                    </div>
                   </td>
-                    )}
                 </tr>
               ))}
             </tbody>
