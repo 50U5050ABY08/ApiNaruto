@@ -39,6 +39,22 @@ export async function criarNinja(
   return response.json()
 }
 
+export async function deletarNinja(
+  token: string,
+  ninjaId: number,
+): Promise<void> {
+  const response = await fetch(`${API_URL}/ninjas/${ninjaId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Erro ao deletar ninja. Status: ${response.status}`)
+  }
+}
+
 /**ESSE SERVICE FAZ:
  * 
  * Recebe token

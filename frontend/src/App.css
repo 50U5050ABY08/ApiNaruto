@@ -148,6 +148,15 @@ select {
   background: #d1d5db;
 }
 
+.button-danger {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.button-danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
 .message {
   margin: 16px 0;
   color: #4b5563;

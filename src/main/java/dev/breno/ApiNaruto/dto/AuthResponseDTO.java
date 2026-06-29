@@ -28,4 +28,7 @@ import lombok.Setter;
 public class AuthResponseDTO {
 
     private String token;
+    
+    
+    private String role;
 }

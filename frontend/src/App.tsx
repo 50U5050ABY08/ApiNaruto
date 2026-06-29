@@ -5,7 +5,7 @@ import NinjaForm from './components/NinjaForm'
 import NinjaList from './components/NinjaList'
 import { login } from './services/authService'
 import { buscarMissoes } from './services/missaoService'
-import { buscarNinjas, criarNinja } from './services/ninjaService'
+import { buscarNinjas, criarNinja, deletarNinja } from './services/ninjaService'
 import type { Missao } from './types/missao'
 import type { Ninja, NinjaRequest } from './types/ninja'
 
@@ -20,6 +20,7 @@ function App() {
   const [password, setPassword] = useState<string>('')
 
   const [token, setToken] = useState<string>('')
+  const [role, setRole] = useState<string>('')
   const [mensagem, setMensagem] = useState<string>(
     'Faça login para acessar os ninjas.',
   )
@@ -28,6 +29,7 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const isAuthenticated = token.length > 0
+  const isAdmin = role === 'ROLE_ADMIN'
 
   async function fazerLogin() {
     if (!username || !password) {
@@ -45,6 +47,7 @@ function App() {
 })
 
 setToken(response.token)
+setRole(response.role)
 setPassword('')
 setNinjas([])
 
@@ -56,6 +59,7 @@ setMensagem('Login realizado com sucesso.')
       console.error(error)
 
       setToken('')
+      setRole('')
       setNinjas([])
       setMensagem('Usuário ou senha inválidos.')
     } finally {
@@ -90,6 +94,7 @@ setMensagem('Login realizado com sucesso.')
 
   function sair() {
     setToken('')
+    setRole('')
     setNinjas([])
     setUsername('')
     setPassword('')
@@ -117,6 +122,41 @@ setMensagem('Login realizado com sucesso.')
   } catch (error) {
     console.error(error)
     setMensagem('Erro ao cadastrar ninja. Verifique os dados informados.')
+  } finally {
+    setIsLoading(false)
+  }
+}
+
+async function excluirNinja(ninjaId: number) {
+  if (!token) {
+    setMensagem('Você precisa fazer login antes de excluir um ninja.')
+    return
+  }
+
+  const confirmou = window.confirm(
+    'Tem certeza que deseja excluir este ninja?',
+  )
+
+  if (!confirmou) {
+    return
+  }
+
+  setMensagem('Excluindo ninja...')
+  setIsLoading(true)
+
+  try {
+    await deletarNinja(token, ninjaId)
+
+    setNinjas((ninjasAtuais) =>
+      ninjasAtuais.filter((ninja) => ninja.id !== ninjaId),
+    )
+
+    setMensagem('Ninja excluído com sucesso.')
+  } catch (error) {
+    console.error(error)
+    setMensagem(
+      'Erro ao excluir ninja. Verifique se seu usuário tem permissão de administrador.',
+    )
   } finally {
     setIsLoading(false)
   }
@@ -152,12 +192,14 @@ setMensagem('Login realizado com sucesso.')
       />
 
       <NinjaList
-        ninjas={ninjas}
-        mensagem={mensagem}
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onListarNinjas={listarNinjas}
-      />
+  ninjas={ninjas}
+  mensagem={mensagem}
+  isAuthenticated={isAuthenticated}
+  isAdmin={isAdmin}
+  isLoading={isLoading}
+  onListarNinjas={listarNinjas}
+  onExcluirNinja={excluirNinja}
+/>
     </div>
   </main>
 )

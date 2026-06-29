@@ -84,7 +84,7 @@ public class UserService {
 
         String token = jwtService.gerarToken(user.getUsername());
 
-        return new AuthResponseDTO(token);
+        return new AuthResponseDTO(token, user.getRole());
     }
 
 }
