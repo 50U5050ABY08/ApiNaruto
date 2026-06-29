@@ -86,13 +86,16 @@ function App() {
   }
 
   return (
-    <main>
+  <main className="app-container">
+    <header className="app-header">
       <h1>{titulo}</h1>
 
       <p>
         Front-end desenvolvido com React e TypeScript.
       </p>
+    </header>
 
+    <div className="app-content">
       <LoginForm
         username={username}
         password={password}
@@ -111,8 +114,9 @@ function App() {
         isLoading={isLoading}
         onListarNinjas={listarNinjas}
       />
-    </main>
-  )
+    </div>
+  </main>
+)
 }
 
 export default App

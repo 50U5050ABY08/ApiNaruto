@@ -16,30 +16,48 @@ function NinjaList({
   onListarNinjas,
 }: NinjaListProps) {
   return (
-    <section>
+  <section className="card">
+    <div className="card-header">
       <h2>Ninjas</h2>
+    </div>
 
-      <button
-        onClick={onListarNinjas}
-        disabled={!isAuthenticated || isLoading}
-      >
-        Listar ninjas
-      </button>
+    <button
+      className="button button-primary"
+      onClick={onListarNinjas}
+      disabled={!isAuthenticated || isLoading}
+    >
+      Listar ninjas
+    </button>
 
-      <p>{mensagem}</p>
+    <p className="message">{mensagem}</p>
 
-      {isAuthenticated && ninjas.length > 0 && (
-        <ul>
-          {ninjas.map((ninja) => (
-            <li key={ninja.id}>
-              {ninja.nome} - {ninja.idade} anos - Missão:{' '}
-              {ninja.missao ?? 'Sem missão'}
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  )
+    {isAuthenticated && ninjas.length > 0 && (
+      <div className="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Idade</th>
+              <th>Missão</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {ninjas.map((ninja) => (
+              <tr key={ninja.id}>
+                <td>{ninja.nome}</td>
+                <td>{ninja.email}</td>
+                <td>{ninja.idade}</td>
+                <td>{ninja.missao ?? 'Sem missão'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </section>
+)
 }
 
 export default NinjaList

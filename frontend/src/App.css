@@ -1,15 +1,211 @@
-main {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 24px;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f8;
+  color: #1f2937;
   font-family: Arial, sans-serif;
 }
 
-h1 {
-  font-size: 36px;
+button,
+input {
+  font: inherit;
 }
 
-button {
-  padding: 10px 16px;
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 32px 16px;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.app-header h1 {
+  margin: 0 0 8px;
+  font-size: 40px;
+}
+
+.app-header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.app-content {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.form-group input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #ffffff;
+}
+
+.form-group input:disabled {
+  background: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
   cursor: pointer;
 }
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button-primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.button-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.button-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.button-secondary:hover:not(:disabled) {
+  background: #d1d5db;
+}
+
+.message {
+  margin: 16px 0;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background: #f9fafb;
+  font-size: 14px;
+  color: #374151;
+}
+
+td {
+  font-size: 14px;
+}
+
+@media (max-width: 800px) {
+  .app-content {
+    grid-template-columns: 1fr;
+  }
+
+  .app-header h1 {
+    font-size: 32px;
+  }
+}
+
+
+/** * O QUE ESSE CSS FAZ?
+================================================================================================================================================================================================================================================================================================================================================
+= grid-template-columns: 320px 1fr; define que a primeira coluna terá largura fixa de 320px e a segunda coluna ocupará o restante do espaço disponível. Isso cria um layout de duas colunas, onde a primeira coluna é geralmente usada para navegação ou informações secundárias, enquanto a segunda coluna é usada para o conteúdo principal. =
+=                                                                                                                                                                                                                                                                                                                                              =
+= login fica na coluna esquerda                                                                                                                                                                                                                                                                                                                =
+= ninjas ficam na coluna direita                                                                                                                                                                                                                                                                                                               =
+================================================================================================================================================================================================================================================================================================================================================
+card
+===================================
+--->cria caixas visuais separadas =
+===================================
+
+@media (max-width: 800px) 
+----> em telas menores, vira uma coluna só
+---->responsivo básico
+
+overflow-x: auto
+---> se a tabela ficar grande no celular, permite rolar para o lado
+ */
