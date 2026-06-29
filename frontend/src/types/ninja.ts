@@ -6,6 +6,13 @@ export interface Ninja {
   missao: string | null
 }
 
+export interface NinjaRequest {
+  nome: string
+  email: string
+  idade: number
+  missaoId: number
+}
+
 export interface PageResponse<T> {
   content: T[]
   empty: boolean

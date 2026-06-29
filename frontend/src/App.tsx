@@ -1,12 +1,19 @@
 import { useState } from 'react'
 import './App.css'
 import LoginForm from './components/LoginForm'
+import NinjaForm from './components/NinjaForm'
 import NinjaList from './components/NinjaList'
 import { login } from './services/authService'
-import { buscarNinjas } from './services/ninjaService'
-import type { Ninja } from './types/ninja'
+import { buscarMissoes } from './services/missaoService'
+import { buscarNinjas, criarNinja } from './services/ninjaService'
+import type { Missao } from './types/missao'
+import type { Ninja, NinjaRequest } from './types/ninja'
+
 
 function App() {
+
+  const [missoes, setMissoes] = useState<Missao[]>([])
+  
   const titulo: string = 'API Naruto'
 
   const [username, setUsername] = useState<string>('')
@@ -33,14 +40,18 @@ function App() {
 
     try {
       const response = await login({
-        username,
-        password,
-      })
+  username,
+  password,
+})
 
-      setToken(response.token)
-      setPassword('')
-      setNinjas([])
-      setMensagem('Login realizado com sucesso.')
+setToken(response.token)
+setPassword('')
+setNinjas([])
+
+const missoesEncontradas = await buscarMissoes(response.token)
+setMissoes(missoesEncontradas)
+
+setMensagem('Login realizado com sucesso.')
     } catch (error) {
       console.error(error)
 
@@ -85,6 +96,32 @@ function App() {
     setMensagem('Você saiu da aplicação.')
   }
 
+  async function cadastrarNinja(ninjaRequest: NinjaRequest) {
+  if (!token) {
+    setMensagem('Você precisa fazer login antes de cadastrar um ninja.')
+    return
+  }
+
+  setMensagem('Cadastrando ninja...')
+  setIsLoading(true)
+
+  try {
+    const ninjaCriado = await criarNinja(token, ninjaRequest)
+
+    setNinjas((ninjasAtuais) => [
+      ...ninjasAtuais,
+      ninjaCriado,
+    ])
+
+    setMensagem('Ninja cadastrado com sucesso.')
+  } catch (error) {
+    console.error(error)
+    setMensagem('Erro ao cadastrar ninja. Verifique os dados informados.')
+  } finally {
+    setIsLoading(false)
+  }
+}
+
   return (
   <main className="app-container">
     <header className="app-header">
@@ -105,6 +142,13 @@ function App() {
         onPasswordChange={setPassword}
         onLogin={fazerLogin}
         onLogout={sair}
+      />
+
+      <NinjaForm
+  missoes={missoes}
+  isAuthenticated={isAuthenticated}
+  isLoading={isLoading}
+  onCriarNinja={cadastrarNinja}
       />
 
       <NinjaList

@@ -10,7 +10,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -37,10 +38,10 @@ input {
 
 .app-content {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 320px 320px 1fr;
   gap: 24px;
   align-items: start;
 }
@@ -96,7 +97,8 @@ input {
   font-weight: 700;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   border: 1px solid #d1d5db;
   border-radius: 8px;
@@ -104,7 +106,8 @@ input {
   background: #ffffff;
 }
 
-.form-group input:disabled {
+.form-group input:disabled,
+.form-group select:disabled {
   background: #f3f4f6;
   cursor: not-allowed;
 }
