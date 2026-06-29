@@ -18,28 +18,39 @@ function App() {
   )
 
   const [ninjas, setNinjas] = useState<Ninja[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const isAuthenticated = token.length > 0
 
   async function fazerLogin() {
-  setMensagem('Realizando login...')
+    if (!username || !password) {
+      setMensagem('Informe usuário e senha.')
+      return
+    }
 
-  try {
-    const response = await login({
-      username,
-      password,
-    })
+    setMensagem('Realizando login...')
+    setIsLoading(true)
 
-    setToken(response.token)
-    setNinjas([])
-    setMensagem('Login realizado com sucesso.')
-  } catch (error) {
-    console.error(error)
+    try {
+      const response = await login({
+        username,
+        password,
+      })
 
-    setToken('')
-    setNinjas([])
+      setToken(response.token)
+      setPassword('')
+      setNinjas([])
+      setMensagem('Login realizado com sucesso.')
+    } catch (error) {
+      console.error(error)
 
-    setMensagem('Usuário ou senha inválidos.')
+      setToken('')
+      setNinjas([])
+      setMensagem('Usuário ou senha inválidos.')
+    } finally {
+      setIsLoading(false)
+    }
   }
-}
 
   async function listarNinjas() {
     if (!token) {
@@ -48,6 +59,7 @@ function App() {
     }
 
     setMensagem('Buscando ninjas da API...')
+    setIsLoading(true)
 
     try {
       const ninjasEncontrados = await buscarNinjas(token)
@@ -56,7 +68,12 @@ function App() {
       setMensagem('Ninjas carregados com sucesso.')
     } catch (error) {
       console.error(error)
-      setMensagem('Erro ao buscar ninjas.')
+
+      setToken('')
+      setNinjas([])
+      setMensagem('Erro ao buscar ninjas. Faça login novamente.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -79,6 +96,8 @@ function App() {
       <LoginForm
         username={username}
         password={password}
+        isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
         onUsernameChange={setUsername}
         onPasswordChange={setPassword}
         onLogin={fazerLogin}
@@ -88,6 +107,8 @@ function App() {
       <NinjaList
         ninjas={ninjas}
         mensagem={mensagem}
+        isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
         onListarNinjas={listarNinjas}
       />
     </main>
