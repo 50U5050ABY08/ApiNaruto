@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import './App.css'
+import LoginForm from './components/LoginForm'
+import NinjaList from './components/NinjaList'
 import { login } from './services/authService'
-import { buscarNinjas } from './services/ninjaService.ts'
+import { buscarNinjas } from './services/ninjaService'
 import type { Ninja } from './types/ninja'
 
 function App() {
@@ -18,21 +20,26 @@ function App() {
   const [ninjas, setNinjas] = useState<Ninja[]>([])
 
   async function fazerLogin() {
-    setMensagem('Realizando login...')
+  setMensagem('Realizando login...')
 
-    try {
-      const response = await login({
-        username,
-        password,
-      })
+  try {
+    const response = await login({
+      username,
+      password,
+    })
 
-      setToken(response.token)
-      setMensagem('Login realizado com sucesso.')
-    } catch (error) {
-      console.error(error)
-      setMensagem('Usuário ou senha inválidos.')
-    }
+    setToken(response.token)
+    setNinjas([])
+    setMensagem('Login realizado com sucesso.')
+  } catch (error) {
+    console.error(error)
+
+    setToken('')
+    setNinjas([])
+
+    setMensagem('Usuário ou senha inválidos.')
   }
+}
 
   async function listarNinjas() {
     if (!token) {
@@ -69,50 +76,20 @@ function App() {
         Front-end desenvolvido com React e TypeScript.
       </p>
 
-      <section>
-        <h2>Login</h2>
+      <LoginForm
+        username={username}
+        password={password}
+        onUsernameChange={setUsername}
+        onPasswordChange={setPassword}
+        onLogin={fazerLogin}
+        onLogout={sair}
+      />
 
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
-
-        <button onClick={fazerLogin}>
-          Entrar
-        </button>
-
-        <button onClick={sair}>
-          Sair
-        </button>
-      </section>
-
-      <section>
-        <h2>Ninjas</h2>
-
-        <button onClick={listarNinjas}>
-          Listar ninjas
-        </button>
-
-        <p>{mensagem}</p>
-
-        <ul>
-          {ninjas.map((ninja) => (
-            <li key={ninja.id}>
-              {ninja.nome} - {ninja.idade} anos - Missão:{' '}
-              {ninja.missao ?? 'Sem missão'}
-            </li>
-          ))}
-        </ul>
-      </section>
+      <NinjaList
+        ninjas={ninjas}
+        mensagem={mensagem}
+        onListarNinjas={listarNinjas}
+      />
     </main>
   )
 }
@@ -130,6 +107,9 @@ export default App
 → tipo Ninja
 → tipo AuthResponse
 ===================================================================================
+App.tsx
+→ tinha toda a tela dentro dele
+===================================================================================
 
 AGORA:
 App.tsx
@@ -146,4 +126,15 @@ types/
 
 api.ts
 → guarda a URL base da API
+
+=====================================================================================
+
+App.tsx
+→ controla o estado geral
+
+LoginForm.tsx
+→ cuida apenas do formulário de login
+
+NinjaList.tsx
+→ cuida apenas da listagem dos ninjas
  */
