@@ -1,5 +1,6 @@
 import { API_URL } from './api'
 import type { Missao } from '../types/missao'
+import { extractApiErrorMessage } from '../utils/apiError'
 
 export async function buscarMissoes(
   token: string,
@@ -11,7 +12,8 @@ export async function buscarMissoes(
   })
 
   if (!response.ok) {
-    throw new Error(`Erro ao buscar missões. Status: ${response.status}`)
+    const message = await extractApiErrorMessage(response)
+    throw new Error(message)
   }
 
   return response.json()

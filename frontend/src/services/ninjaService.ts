@@ -1,5 +1,6 @@
 import { API_URL } from './api'
 import type { Ninja, NinjaRequest, PageResponse } from '../types/ninja'
+import { extractApiErrorMessage } from '../utils/apiError'
 
 export async function buscarNinjas(
   token: string,
@@ -11,7 +12,8 @@ export async function buscarNinjas(
   })
 
   if (!response.ok) {
-    throw new Error(`Erro ao buscar ninjas. Status: ${response.status}`)
+    const message = await extractApiErrorMessage(response)
+    throw new Error(message)
   }
 
   const data: PageResponse<Ninja> = await response.json()
@@ -33,7 +35,8 @@ export async function criarNinja(
   })
 
   if (!response.ok) {
-    throw new Error(`Erro ao criar ninja. Status: ${response.status}`)
+    const message = await extractApiErrorMessage(response)
+    throw new Error(message)
   }
 
   return response.json()
@@ -51,7 +54,8 @@ export async function deletarNinja(
   })
 
   if (!response.ok) {
-    throw new Error(`Erro ao deletar ninja. Status: ${response.status}`)
+    const message = await extractApiErrorMessage(response)  
+    throw new Error(message)
   }
 }
 
@@ -70,7 +74,8 @@ export async function atualizarNinja(
   })
 
   if (!response.ok) {
-    throw new Error(`Erro ao atualizar ninja. Status: ${response.status}`)
+    const message = await extractApiErrorMessage(response)
+    throw new Error(message)
   }
 
   return response.json()

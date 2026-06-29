@@ -71,12 +71,16 @@ async function atualizarNinjaSelecionado(
     setMensagem('Ninja atualizado com sucesso.')
   } catch (error) {
     console.error(error)
-    setMensagem('Erro ao atualizar ninja. Verifique os dados informados.')
+
+    if (error instanceof Error) {
+      setMensagem(error.message)
+    } else {
+      setMensagem('Erro ao atualizar ninja.')
+    }
   } finally {
     setIsLoading(false)
   }
 }
-
   async function fazerLogin() {
     if (!username || !password) {
       setMensagem('Informe usuário e senha.')
@@ -107,11 +111,17 @@ setMensagem('Login realizado com sucesso.')
       setToken('')
       setRole('')
       setNinjas([])
-      setMensagem('Usuário ou senha inválidos.')
-    } finally {
+      setMissoes([])
+
+      if (error instanceof Error) {
+        setMensagem(error.message)
+      } else {
+        setMensagem('Erro ao realizar login.')
+      }
+   }finally {
       setIsLoading(false)
     }
-  }
+ }
 
   async function listarNinjas() {
     if (!token) {
@@ -131,8 +141,15 @@ setMensagem('Login realizado com sucesso.')
       console.error(error)
 
       setToken('')
+      setRole('')
       setNinjas([])
-      setMensagem('Erro ao buscar ninjas. Faça login novamente.')
+      setMissoes([])
+
+      if (error instanceof Error) {
+        setMensagem(error.message)
+      } else {
+        setMensagem('Erro ao buscar ninjas.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -142,6 +159,7 @@ setMensagem('Login realizado com sucesso.')
     setToken('')
     setRole('')
     setNinjas([])
+    setMissoes([])
     setNinjaEmEdicao(null)
     setUsername('')
     setPassword('')
@@ -168,7 +186,12 @@ setMensagem('Login realizado com sucesso.')
     setMensagem('Ninja cadastrado com sucesso.')
   } catch (error) {
     console.error(error)
-    setMensagem('Erro ao cadastrar ninja. Verifique os dados informados.')
+
+    if (error instanceof Error) {
+      setMensagem(error.message)
+    } else {
+      setMensagem('Erro ao cadastrar ninja.')
+    }
   } finally {
     setIsLoading(false)
   }
@@ -199,15 +222,18 @@ async function excluirNinja(ninjaId: number) {
     )
 
     if (ninjaEmEdicao?.id === ninjaId) {
-  setNinjaEmEdicao(null)
+      setNinjaEmEdicao(null)
     }
 
     setMensagem('Ninja excluído com sucesso.')
   } catch (error) {
     console.error(error)
-    setMensagem(
-      'Erro ao excluir ninja. Verifique se seu usuário tem permissão de administrador.',
-    )
+
+    if (error instanceof Error) {
+      setMensagem(error.message)
+    } else {
+      setMensagem('Erro ao excluir ninja.')
+    }
   } finally {
     setIsLoading(false)
   }
@@ -303,4 +329,26 @@ LoginForm.tsx
 
 NinjaList.tsx
 → cuida apenas da listagem dos ninjas
+
+=====================================================================================
+
+Regra pra guardar:
+
+try {
+  // tenta fazer a requisição
+} catch (error) {
+  // trata o erro
+} finally {
+  // sempre executa, dando certo ou dando erro
+}
+
+tradução:
+try
+→ tente
+
+catch
+→ capture o erro
+
+finally
+→ finalmente / sempre execute
  */

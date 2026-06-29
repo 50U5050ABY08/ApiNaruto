@@ -1,5 +1,6 @@
 import { API_URL } from './api'
 import type { AuthRequest, AuthResponse } from '../types/auth'
+import { extractApiErrorMessage } from '../utils/apiError'
 
 export async function login(
   authRequest: AuthRequest,
@@ -13,7 +14,8 @@ export async function login(
   })
 
   if (!response.ok) {
-    throw new Error(`Erro no login. Status: ${response.status}`)
+    const message = await extractApiErrorMessage(response)
+    throw new Error(message)
   }
 
   return response.json()
