@@ -12,8 +12,8 @@ export async function extractApiErrorMessage(response: Response,): Promise<strin
             return data.message
         }
 
-        return 'Erro na requisição. Status: ${response.status}'
+        return `Erro na requisição. Status: ${response.status}`
     } catch {
-        return 'Erro na requisição. Status: ${response.status}'
+        return `Erro na requisição. Status: ${response.status}`
     }
 }
