@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Missao } from '../types/missao'
 import type { Ninja, NinjaRequest } from '../types/ninja'
 
@@ -12,6 +12,21 @@ interface NinjaFormProps {
   onCancelarEdicao: () => void
 }
 
+function buscarMissaoIdInicial(
+  ninjaEmEdicao: Ninja | null,
+  missoes: Missao[],
+): string {
+  if (!ninjaEmEdicao) {
+    return ''
+  }
+
+  const missaoEncontrada = missoes.find(
+    (missao) => missao.missao === ninjaEmEdicao.missao,
+  )
+
+  return missaoEncontrada ? String(missaoEncontrada.id) : ''
+}
+
 function NinjaForm({
   missoes,
   ninjaEmEdicao,
@@ -21,30 +36,16 @@ function NinjaForm({
   onAtualizarNinja,
   onCancelarEdicao,
 }: NinjaFormProps) {
-  const [nome, setNome] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
-  const [idade, setIdade] = useState<string>('')
-  const [missaoId, setMissaoId] = useState<string>('')
+  const [nome, setNome] = useState(() => ninjaEmEdicao?.nome ?? '')
+  const [email, setEmail] = useState(() => ninjaEmEdicao?.email ?? '')
+  const [idade, setIdade] = useState(() =>
+    ninjaEmEdicao ? String(ninjaEmEdicao.idade) : '',
+  )
+  const [missaoId, setMissaoId] = useState(() =>
+    buscarMissaoIdInicial(ninjaEmEdicao, missoes),
+  )
 
   const estaEditando = ninjaEmEdicao !== null
-
-  useEffect(() => {
-    if (!ninjaEmEdicao) {
-      return
-    }
-
-    setNome(ninjaEmEdicao.nome)
-    setEmail(ninjaEmEdicao.email)
-    setIdade(String(ninjaEmEdicao.idade))
-
-    const missaoEncontrada = missoes.find(
-      (missao) => missao.missao === ninjaEmEdicao.missao,
-    )
-
-    setMissaoId(
-      missaoEncontrada ? String(missaoEncontrada.id) : '',
-    )
-  }, [ninjaEmEdicao, missoes])
 
   function limparFormulario() {
     setNome('')
@@ -83,9 +84,7 @@ function NinjaForm({
   return (
     <section className="card">
       <div className="card-header">
-        <h2>
-          {estaEditando ? 'Editar ninja' : 'Cadastrar ninja'}
-        </h2>
+        <h2>{estaEditando ? 'Editar ninja' : 'Cadastrar ninja'}</h2>
       </div>
 
       <div className="form-group">

@@ -262,6 +262,7 @@ async function excluirNinja(ninjaId: number) {
       />
 
    <NinjaForm
+  key={ninjaEmEdicao ? `edit-${ninjaEmEdicao.id}` : 'create'}
   missoes={missoes}
   ninjaEmEdicao={ninjaEmEdicao}
   isAuthenticated={isAuthenticated}
