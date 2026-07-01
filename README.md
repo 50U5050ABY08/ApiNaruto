@@ -1,16 +1,26 @@
 # API Naruto Fullstack
 
-Projeto fullstack para gerenciamento de ninjas, missões e autenticação de usuários, desenvolvido com Spring Boot no backend e React com TypeScript no frontend.
+## Português
 
-O projeto simula uma aplicação real com autenticação JWT, controle de permissões por role, CRUD de ninjas, integração com banco PostgreSQL, documentação Swagger e testes automatizados.
+Projeto fullstack para gerenciamento de ninjas, missões e autenticação de usuários, desenvolvido com **Spring Boot** no backend e **React com TypeScript** no frontend.
+
+O projeto simula uma aplicação real com autenticação JWT, controle de permissões por role, CRUD de ninjas, integração com banco PostgreSQL, documentação Swagger/OpenAPI e testes automatizados no backend e frontend.
 
 ---
 
-## Tecnologias utilizadas
+## English
 
-### Backend
+Fullstack project for managing ninjas, missions and user authentication, built with **Spring Boot** on the backend and **React with TypeScript** on the frontend.
 
-- Java
+The project simulates a real-world application with JWT authentication, role-based authorization, ninja CRUD operations, PostgreSQL integration, Swagger/OpenAPI documentation and automated tests on both backend and frontend.
+
+---
+
+# Tecnologias utilizadas / Technologies Used
+
+## Backend
+
+- Java 17
 - Spring Boot
 - Spring Web
 - Spring Data JPA
@@ -24,7 +34,7 @@ O projeto simula uma aplicação real com autenticação JWT, controle de permis
 - Mockito
 - MockMvc
 
-### Frontend
+## Frontend
 
 - React
 - TypeScript
@@ -35,7 +45,9 @@ O projeto simula uma aplicação real com autenticação JWT, controle de permis
 
 ---
 
-## Funcionalidades
+# Funcionalidades / Features
+
+## Português
 
 - Cadastro de usuários
 - Login com JWT
@@ -50,19 +62,44 @@ O projeto simula uma aplicação real com autenticação JWT, controle de permis
 - Documentação da API com Swagger
 - Testes automatizados no backend e frontend
 
+## English
+
+- User registration
+- Login with JWT
+- Role-based access control
+- Ninja listing
+- Ninja creation
+- Ninja update
+- Ninja deletion restricted to ADMIN users
+- Ninja and mission association
+- Business rule validation
+- Standardized error handling
+- API documentation with Swagger
+- Automated tests on backend and frontend
+
 ---
 
-## Regra de negócio principal
+# Regra de negócio principal / Main Business Rule
+
+## Português
 
 Ninjas menores de 18 anos não podem participar de missões Rank A.
 
 Essa regra é aplicada tanto no cadastro quanto na atualização de ninjas.
 
+## English
+
+Ninjas under 18 years old cannot participate in Rank A missions.
+
+This rule is applied both when creating and updating ninjas.
+
 ---
 
-## Segurança
+# Segurança / Security
 
-A API utiliza autenticação JWT.
+## Português
+
+A API utiliza autenticação JWT e autorização baseada em roles.
 
 Rotas públicas:
 
@@ -88,37 +125,163 @@ DELETE /ninjas/{id}
 
 O frontend também oculta ações administrativas para usuários comuns, mas a segurança real é garantida pelo backend.
 
+## English
+
+The API uses JWT authentication and role-based authorization.
+
+Public routes:
+
+```text
+POST /auth/register
+POST /auth/login
+```
+
+Protected routes:
+
+```text
+GET /ninjas
+POST /ninjas
+PUT /ninjas/{id}
+GET /missoes
+```
+
+ADMIN-only route:
+
+```text
+DELETE /ninjas/{id}
+```
+
+The frontend also hides administrative actions from regular users, but the real security enforcement is handled by the backend.
+
 ---
 
-## Variáveis de ambiente
+# Variáveis de ambiente / Environment Variables
 
-### Backend
+## Português
 
-A aplicação utiliza uma variável de ambiente para a chave JWT:
+O projeto utiliza variáveis de ambiente para evitar que senhas, chaves JWT e configurações sensíveis sejam enviadas para o GitHub.
+
+## English
+
+The project uses environment variables to prevent passwords, JWT secrets and sensitive configuration from being pushed to GitHub.
+
+---
+
+## Backend
+
+### Português
+
+O backend utiliza as seguintes variáveis:
 
 ```env
-JWT_SECRET=sua-chave-secreta-aqui
+DB_URL=jdbc:postgresql://localhost:5432/narutodb
+DB_USERNAME=postgres
+DB_PASSWORD=sua-senha-do-postgres
+JWT_SECRET=sua-chave-jwt-grande-e-secreta
 ```
 
-No Windows, exemplo:
+No Windows, exemplo de configuração:
 
 ```powershell
-setx JWT_SECRET "sua-chave-secreta-aqui"
+setx DB_URL "jdbc:postgresql://localhost:5432/narutodb"
+setx DB_USERNAME "postgres"
+setx DB_PASSWORD "sua-senha-do-postgres"
+setx JWT_SECRET "sua-chave-jwt-grande-e-secreta"
 ```
 
-A chave real não deve ser enviada para o GitHub.
+Após configurar com `setx`, é necessário fechar e abrir novamente o terminal ou a IDE para que as variáveis fiquem disponíveis.
+
+O arquivo principal do backend utiliza essas variáveis em:
+
+```text
+src/main/resources/application.properties
+```
+
+Exemplo seguro:
+
+```properties
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/narutodb}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+
+jwt.secret=${JWT_SECRET}
+jwt.expiration=1h
+```
+
+A senha do banco e a chave JWT real não devem ser enviadas para o GitHub.
+
+### English
+
+The backend uses the following environment variables:
+
+```env
+DB_URL=jdbc:postgresql://localhost:5432/narutodb
+DB_USERNAME=postgres
+DB_PASSWORD=your-postgres-password
+JWT_SECRET=your-large-and-secure-jwt-secret
+```
+
+Windows configuration example:
+
+```powershell
+setx DB_URL "jdbc:postgresql://localhost:5432/narutodb"
+setx DB_USERNAME "postgres"
+setx DB_PASSWORD "your-postgres-password"
+setx JWT_SECRET "your-large-and-secure-jwt-secret"
+```
+
+After using `setx`, close and reopen the terminal or IDE so the variables become available.
+
+The main backend configuration file uses these variables at:
+
+```text
+src/main/resources/application.properties
+```
+
+Secure example:
+
+```properties
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/narutodb}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+
+jwt.secret=${JWT_SECRET}
+jwt.expiration=1h
+```
+
+The real database password and JWT secret must not be pushed to GitHub.
 
 ---
 
-### Frontend
+## Frontend
 
-Dentro da pasta `frontend`, crie o arquivo `.env`:
+### Português
+
+Dentro da pasta `frontend`, existe um arquivo de exemplo:
+
+```text
+frontend/.env.example
+```
+
+Conteúdo:
 
 ```env
 VITE_API_URL=http://localhost:8080
 ```
 
-Para testes, também pode existir o arquivo:
+Para rodar localmente, crie um arquivo chamado:
+
+```text
+frontend/.env
+```
+
+Com o conteúdo:
+
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+Para testes do frontend, também pode ser criado localmente:
 
 ```text
 frontend/.env.test
@@ -130,9 +293,53 @@ Com o conteúdo:
 VITE_API_URL=http://localhost:8080
 ```
 
+Os arquivos `.env` e `.env.test` são ignorados pelo Git. Apenas o `.env.example` deve ser versionado.
+
+### English
+
+Inside the `frontend` folder, there is an example file:
+
+```text
+frontend/.env.example
+```
+
+Content:
+
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+To run the project locally, create a file named:
+
+```text
+frontend/.env
+```
+
+With the following content:
+
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+For frontend tests, you can also create locally:
+
+```text
+frontend/.env.test
+```
+
+With the following content:
+
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+The `.env` and `.env.test` files are ignored by Git. Only `.env.example` should be versioned.
+
 ---
 
-## Banco de dados
+# Banco de dados / Database
+
+## Português
 
 Banco utilizado:
 
@@ -146,9 +353,25 @@ Nome do banco:
 narutodb
 ```
 
+## English
+
+Database used:
+
+```text
+PostgreSQL
+```
+
+Database name:
+
+```text
+narutodb
+```
+
 ---
 
-## Como rodar o backend
+# Como rodar o backend / How to Run the Backend
+
+## Português
 
 Na raiz do projeto, execute:
 
@@ -164,9 +387,27 @@ A API ficará disponível em:
 http://localhost:8080
 ```
 
+## English
+
+From the project root, run:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+Or run it directly from NetBeans IDE.
+
+The API will be available at:
+
+```text
+http://localhost:8080
+```
+
 ---
 
-## Documentação Swagger
+# Documentação Swagger / Swagger Documentation
+
+## Português
 
 Com o backend rodando, acesse:
 
@@ -180,9 +421,25 @@ OpenAPI JSON:
 http://localhost:8080/v3/api-docs
 ```
 
+## English
+
+With the backend running, access:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+OpenAPI JSON:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
 ---
 
-## Como rodar o frontend
+# Como rodar o frontend / How to Run the Frontend
+
+## Português
 
 Entre na pasta do frontend:
 
@@ -208,9 +465,37 @@ O frontend ficará disponível em:
 http://localhost:5173
 ```
 
+## English
+
+Enter the frontend folder:
+
+```powershell
+cd frontend
+```
+
+Install dependencies:
+
+```powershell
+npm.cmd install
+```
+
+Run the project:
+
+```powershell
+npm.cmd run dev
+```
+
+The frontend will be available at:
+
+```text
+http://localhost:5173
+```
+
 ---
 
-## Testes do backend
+# Testes do backend / Backend Tests
+
+## Português
 
 Na raiz do projeto, execute:
 
@@ -225,9 +510,26 @@ Testes implementados:
 - Testes de segurança do NinjaController
 - Testes de regras de negócio do NinjaService
 
+## English
+
+From the project root, run:
+
+```powershell
+.\mvnw.cmd test
+```
+
+Implemented tests:
+
+- JwtService tests
+- UserService tests
+- NinjaController security tests
+- NinjaService business rule tests
+
 ---
 
-## Testes do frontend
+# Testes do frontend / Frontend Tests
+
+## Português
 
 Entre na pasta do frontend:
 
@@ -250,9 +552,34 @@ Testes implementados:
 - Testes do NinjaForm
 - Testes de integração do App
 
+## English
+
+Enter the frontend folder:
+
+```powershell
+cd frontend
+```
+
+Run:
+
+```powershell
+npm.cmd run test
+```
+
+Implemented tests:
+
+- API error utility tests
+- Service tests with mocked fetch
+- LoginForm tests
+- NinjaList tests
+- NinjaForm tests
+- App integration tests
+
 ---
 
-## Validação de qualidade do frontend
+# Validação de qualidade do frontend / Frontend Quality Validation
+
+## Português
 
 Dentro da pasta `frontend`, execute:
 
@@ -265,9 +592,22 @@ O comando `lint` valida o padrão do código.
 
 O comando `build` gera a versão de produção do frontend.
 
+## English
+
+Inside the `frontend` folder, run:
+
+```powershell
+npm.cmd run lint
+npm.cmd run build
+```
+
+The `lint` command validates code quality rules.
+
+The `build` command generates the production version of the frontend.
+
 ---
 
-## Estrutura do projeto
+# Estrutura do projeto / Project Structure
 
 ```text
 ApiNarutonetbeans/
@@ -276,6 +616,8 @@ ApiNarutonetbeans/
 │   │   ├── java/
 │   │   └── resources/
 │   └── test/
+│       ├── java/
+│       └── resources/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -283,6 +625,7 @@ ApiNarutonetbeans/
 │   │   ├── types/
 │   │   ├── utils/
 │   │   └── test/
+│   ├── .env.example
 │   ├── package.json
 │   └── vite.config.ts
 ├── pom.xml
@@ -291,7 +634,9 @@ ApiNarutonetbeans/
 
 ---
 
-## Status do projeto
+# Status do projeto / Project Status
+
+## Português
 
 Projeto em desenvolvimento com foco em aprendizado, boas práticas e construção de portfólio fullstack.
 
@@ -303,8 +648,28 @@ Principais pontos já implementados:
 - PostgreSQL
 - DTOs e mappers
 - Tratamento global de exceções
-- Swagger
+- Swagger/OpenAPI
 - Frontend React com TypeScript
 - CRUD integrado
 - Testes automatizados
 - Validação com lint e build
+- Configuração segura com variáveis de ambiente
+
+## English
+
+Project under development with a focus on learning, best practices and building a fullstack portfolio.
+
+Main features already implemented:
+
+- REST backend with Spring Boot
+- JWT authentication
+- Role-based authorization
+- PostgreSQL
+- DTOs and mappers
+- Global exception handling
+- Swagger/OpenAPI
+- React frontend with TypeScript
+- Integrated CRUD
+- Automated tests
+- Lint and build validation
+- Secure configuration with environment variables
