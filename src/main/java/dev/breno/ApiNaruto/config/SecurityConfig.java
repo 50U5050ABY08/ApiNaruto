@@ -4,6 +4,9 @@
  */
 package dev.breno.ApiNaruto.config;
 
+import dev.breno.ApiNaruto.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import dev.breno.ApiNaruto.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +31,21 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
+    private final UserRepository userRepository;
+    
+    @Bean
+public UserDetailsService userDetailsService() {
+    return username -> userRepository.findByUsername(username)
+            .map(user -> org.springframework.security.core.userdetails.User
+                    .withUsername(user.getUsername())
+                    .password(user.getPassword())
+                    .authorities(user.getRole())
+                    .build())
+            .orElseThrow(() -> new UsernameNotFoundException(
+                    "Usuario nao encontrado: " + username
+            ));
+}
+    
     @Bean
 public SecurityFilterChain securityFilterChain(
         HttpSecurity http) throws Exception {
