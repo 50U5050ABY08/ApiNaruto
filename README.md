@@ -437,6 +437,204 @@ http://localhost:8080/v3/api-docs
 
 ---
 
+---
+
+# Como rodar com Docker / How to Run with Docker
+
+## Português
+
+O projeto possui configuração Docker para subir a aplicação completa com:
+
+```text
+PostgreSQL
+Backend Spring Boot
+Frontend React com Nginx
+```
+
+Serviços definidos no `docker-compose.yml`:
+
+```text
+postgres
+backend
+frontend
+```
+
+Portas utilizadas:
+
+```text
+PostgreSQL Docker → localhost:5433
+Backend API       → localhost:8080
+Frontend Docker   → localhost:5174
+```
+
+Antes de subir os containers, configure as variáveis de ambiente no PowerShell:
+
+```powershell
+$env:DB_PASSWORD="sua-senha-do-postgres"
+$env:JWT_SECRET="sua-chave-jwt-grande-e-secreta"
+```
+
+Para subir toda a aplicação:
+
+```powershell
+docker compose up -d --build
+```
+
+Para verificar os containers em execução:
+
+```powershell
+docker ps
+```
+
+Para ver os logs do backend:
+
+```powershell
+docker logs api-naruto-backend --tail 80
+```
+
+Para testar a API:
+
+```powershell
+curl.exe -I http://localhost:8080/v3/api-docs
+```
+
+Resultado esperado:
+
+```text
+HTTP/1.1 200
+```
+
+Para testar rota protegida:
+
+```powershell
+curl.exe -i http://localhost:8080/ninjas
+```
+
+Resultado esperado:
+
+```text
+HTTP/1.1 401
+```
+
+Para acessar o frontend Docker:
+
+```text
+http://localhost:5174
+```
+
+Para parar os containers:
+
+```powershell
+docker compose down
+```
+
+Para parar e remover também o volume do banco:
+
+```powershell
+docker compose down -v
+```
+
+Atenção: `docker compose down -v` remove os dados persistidos do PostgreSQL Docker.
+
+---
+
+## English
+
+The project includes Docker configuration to run the complete application with:
+
+```text
+PostgreSQL
+Spring Boot Backend
+React Frontend with Nginx
+```
+
+Services defined in `docker-compose.yml`:
+
+```text
+postgres
+backend
+frontend
+```
+
+Used ports:
+
+```text
+Docker PostgreSQL → localhost:5433
+Backend API       → localhost:8080
+Docker Frontend   → localhost:5174
+```
+
+Before starting the containers, configure the environment variables in PowerShell:
+
+```powershell
+$env:DB_PASSWORD="your-postgres-password"
+$env:JWT_SECRET="your-large-and-secure-jwt-secret"
+```
+
+To start the full application:
+
+```powershell
+docker compose up -d --build
+```
+
+To check running containers:
+
+```powershell
+docker ps
+```
+
+To check backend logs:
+
+```powershell
+docker logs api-naruto-backend --tail 80
+```
+
+To test the API:
+
+```powershell
+curl.exe -I http://localhost:8080/v3/api-docs
+```
+
+Expected result:
+
+```text
+HTTP/1.1 200
+```
+
+To test a protected route:
+
+```powershell
+curl.exe -i http://localhost:8080/ninjas
+```
+
+Expected result:
+
+```text
+HTTP/1.1 401
+```
+
+To access the Docker frontend:
+
+```text
+http://localhost:5174
+```
+
+To stop the containers:
+
+```powershell
+docker compose down
+```
+
+To stop the containers and also remove the database volume:
+
+```powershell
+docker compose down -v
+```
+
+Warning: `docker compose down -v` removes the persisted Docker PostgreSQL data.
+
+---
+
 # Como rodar o frontend / How to Run the Frontend
 
 ## Português
