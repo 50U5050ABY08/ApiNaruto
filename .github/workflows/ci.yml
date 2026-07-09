@@ -83,7 +83,6 @@ jobs:
 
       - name: Build frontend
         run: npm run build
-        
 #CI = Continuous Integration
 #→ Integração Contínua
 #→ testa o projeto automaticamente
