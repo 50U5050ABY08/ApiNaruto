@@ -120,11 +120,16 @@
                     </dependency>
                     
                     <!-- Testes e auto-configuração do Spring Security no Spring Boot 4 -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-security-test</artifactId>
-    <scope>test</scope>
-</dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security-test</artifactId>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+            </dependency>
 	</dependencies>
 
 	<build>
