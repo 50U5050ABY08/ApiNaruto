@@ -83,3 +83,11 @@ jobs:
 
       - name: Build frontend
         run: npm run build
+        
+#CI = Continuous Integration
+#→ Integração Contínua
+#→ testa o projeto automaticamente
+
+#CD = Continuous Delivery / Continuous Deployment
+#→ Entrega Contínua / Implantação Contínua
+#→ prepara ou publica o projeto automaticamente

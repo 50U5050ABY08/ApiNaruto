@@ -1,0 +1,79 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-docker-images:
+    name: Publish Docker Images
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/50u5050aby08/apinaruto-backend:latest
+            ghcr.io/50u5050aby08/apinaruto-backend:${{ github.event.workflow_run.head_sha }}
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          build-args: |
+            VITE_API_URL=http://localhost:8080
+          tags: |
+            ghcr.io/50u5050aby08/apinaruto-frontend:latest
+            ghcr.io/50u5050aby08/apinaruto-frontend:${{ github.event.workflow_run.head_sha }}
+
+#CD
+#→ Continuous Delivery / Continuous Deployment
+#→ Entrega Contínua / Implantação Contínua
+
+#workflow_run
+#→ roda depois que outro workflow termina
+
+#packages: write
+#→ permissão para publicar pacotes/imagens no GitHub Packages
+
+#ghcr.io
+#→ GitHub Container Registry
+
+#build and push
+#→ construir a imagem Docker e publicar no registro
+
+#latest
+#→ tag da versão mais recente
+
+#head_sha
+#→ código único do commit que gerou aquela imagem*/
