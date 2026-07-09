@@ -635,6 +635,156 @@ Warning: `docker compose down -v` removes the persisted Docker PostgreSQL data.
 
 ---
 
+## Demonstração / Demo
+
+### Fluxo principal da API
+
+A API permite registrar usuário, fazer login, receber um token JWT, criar missões, cadastrar ninjas, listar ninjas e aplicar controle de acesso por perfil.
+
+### Main API flow
+
+The API allows user registration, login, JWT token generation, mission creation, ninja creation, ninja listing, and role-based access control.
+
+---
+
+### 1. Registrar usuário / Register user
+
+```bash
+curl -X POST http://localhost:8080/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "demo_user",
+    "password": "123456"
+  }'
+```
+
+---
+
+### 2. Fazer login / Login
+
+```bash
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "demo_user",
+    "password": "123456"
+  }'
+```
+
+Resposta esperada / Expected response:
+
+```json
+{
+  "token": "JWT_TOKEN_AQUI",
+  "role": "ROLE_USER"
+}
+```
+
+---
+
+### 3. Listar ninjas com token JWT / List ninjas with JWT token
+
+```bash
+curl -X GET http://localhost:8080/ninjas \
+  -H "Authorization: Bearer JWT_TOKEN_AQUI"
+```
+
+---
+
+### 4. Criar missão / Create mission
+
+```bash
+curl -X POST http://localhost:8080/missoes \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer JWT_TOKEN_AQUI" \
+  -d '{
+    "missao": "Exame Chunin",
+    "rankingDaMissao": "B"
+  }'
+```
+
+---
+
+### 5. Criar ninja vinculado à missão / Create ninja linked to mission
+
+```bash
+curl -X POST http://localhost:8080/ninjas \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer JWT_TOKEN_AQUI" \
+  -d '{
+    "nome": "Naruto Uzumaki",
+    "email": "naruto@konoha.com",
+    "idade": 18,
+    "missaoId": 1
+  }'
+```
+
+---
+
+### 6. Atualizar ninja / Update ninja
+
+```bash
+curl -X PUT http://localhost:8080/ninjas/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer JWT_TOKEN_AQUI" \
+  -d '{
+    "nome": "Naruto Uzumaki Atualizado",
+    "email": "naruto@konoha.com",
+    "idade": 19,
+    "missaoId": 1
+  }'
+```
+
+---
+
+### 7. Regra de autorização / Authorization rule
+
+Usuários com `ROLE_USER` podem acessar, listar, cadastrar e atualizar dados permitidos pela API.
+
+Users with `ROLE_USER` can access, list, create, and update API resources according to the configured permissions.
+
+A exclusão de ninjas é restrita a usuários com `ROLE_ADMIN`.
+
+Deleting ninjas is restricted to users with `ROLE_ADMIN`.
+
+```bash
+curl -X DELETE http://localhost:8080/ninjas/1 \
+  -H "Authorization: Bearer JWT_TOKEN_AQUI"
+```
+
+Resultado esperado para usuário comum / Expected result for regular user:
+
+```http
+403 Forbidden
+```
+
+Resultado esperado para administrador / Expected result for administrator:
+
+```http
+204 No Content
+```
+
+---
+
+### Observação de segurança / Security note
+
+Não utilize tokens reais, senhas reais ou credenciais sensíveis nos exemplos do README.
+
+Do not use real tokens, real passwords, or sensitive credentials in the README examples.
+
+Use apenas valores demonstrativos, como:
+
+Use only placeholder values, such as:
+
+```text
+<JWT_TOKEN_AQUI>
+demo_user
+123456
+```
+---
+
+---
+
 # Como rodar o frontend / How to Run the Frontend
 
 ## Português
