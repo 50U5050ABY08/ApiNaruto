@@ -636,7 +636,51 @@ Warning: `docker compose down -v` removes the persisted Docker PostgreSQL data.
 
 ---
 
-## Demonstração / Demo
+# Docker Images / Imagens Docker
+
+## Português
+
+As imagens Docker do backend e do frontend são geradas automaticamente pelo workflow de CD e publicadas no GitHub Container Registry.
+
+```text
+Backend image:
+ghcr.io/50u5050aby08/apinaruto-backend:latest
+
+Frontend image:
+ghcr.io/50u5050aby08/apinaruto-frontend:latest
+```
+
+## English
+
+The backend and frontend Docker images are automatically built by the CD workflow and published to GitHub Container Registry.
+
+```text
+Backend image:
+ghcr.io/50u5050aby08/apinaruto-backend:latest
+
+Frontend image:
+ghcr.io/50u5050aby08/apinaruto-frontend:latest
+```
+
+## Fluxo de publicação / Publishing flow
+
+```text
+Push na branch main
+→ CI executa testes, lint e build
+→ CD gera as imagens Docker
+→ CD publica as imagens no GitHub Container Registry
+```
+
+```text
+Push to the main branch
+→ CI runs tests, lint, and build
+→ CD builds Docker images
+→ CD publishes the images to GitHub Container Registry
+```
+
+---
+
+# Demonstração / Demo
 
 ### Fluxo principal da API
 
@@ -676,7 +720,7 @@ Resposta esperada / Expected response:
 
 ```json
 {
-  "token": "JWT_TOKEN_AQUI",
+  "token": "<JWT_TOKEN_AQUI>",
   "role": "ROLE_USER"
 }
 ```
@@ -687,7 +731,7 @@ Resposta esperada / Expected response:
 
 ```bash
 curl -X GET http://localhost:8080/ninjas \
-  -H "Authorization: Bearer JWT_TOKEN_AQUI"
+  -H "Authorization: Bearer <JWT_TOKEN_AQUI>"
 ```
 
 ---
@@ -697,7 +741,7 @@ curl -X GET http://localhost:8080/ninjas \
 ```bash
 curl -X POST http://localhost:8080/missoes \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer JWT_TOKEN_AQUI" \
+  -H "Authorization: Bearer <JWT_TOKEN_AQUI>" \
   -d '{
     "missao": "Exame Chunin",
     "rankingDaMissao": "B"
@@ -711,7 +755,7 @@ curl -X POST http://localhost:8080/missoes \
 ```bash
 curl -X POST http://localhost:8080/ninjas \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer JWT_TOKEN_AQUI" \
+  -H "Authorization: Bearer <JWT_TOKEN_AQUI>" \
   -d '{
     "nome": "Naruto Uzumaki",
     "email": "naruto@konoha.com",
@@ -727,7 +771,7 @@ curl -X POST http://localhost:8080/ninjas \
 ```bash
 curl -X PUT http://localhost:8080/ninjas/1 \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer JWT_TOKEN_AQUI" \
+  -H "Authorization: Bearer <JWT_TOKEN_AQUI>" \
   -d '{
     "nome": "Naruto Uzumaki Atualizado",
     "email": "naruto@konoha.com",
@@ -750,7 +794,7 @@ Deleting ninjas is restricted to users with `ROLE_ADMIN`.
 
 ```bash
 curl -X DELETE http://localhost:8080/ninjas/1 \
-  -H "Authorization: Bearer JWT_TOKEN_AQUI"
+  -H "Authorization: Bearer <JWT_TOKEN_AQUI>"
 ```
 
 Resultado esperado para usuário comum / Expected result for regular user:
