@@ -1,5 +1,5 @@
 # API Naruto Fullstack
-
+[![CI](https://github.com/50U5050ABY08/ApiNaruto/actions/workflows/ci.yml/badge.svg)](https://github.com/50U5050ABY08/ApiNaruto/actions/workflows/ci.yml)
 ## Português
 
 Projeto fullstack para gerenciamento de ninjas, missões e autenticação de usuários, desenvolvido com **Spring Boot** no backend e **React com TypeScript** no frontend.
