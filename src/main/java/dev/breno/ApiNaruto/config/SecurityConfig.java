@@ -25,6 +25,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.beans.factory.annotation.Value;
+import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
@@ -129,7 +131,10 @@ public SecurityFilterChain securityFilterChain(
     CorsConfiguration configuration = new CorsConfiguration();
 
     configuration.setAllowedOrigins(
-            List.of("http://localhost:5173")
+        Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank())
+                .toList()
     );
 
     configuration.setAllowedMethods(
@@ -152,4 +157,7 @@ public SecurityFilterChain securityFilterChain(
 
     return source;
     }
+    
+    @Value("${app.cors.allowed-origins:http://localhost:5173,http://localhost:5174}")
+private String allowedOrigins;
 }
