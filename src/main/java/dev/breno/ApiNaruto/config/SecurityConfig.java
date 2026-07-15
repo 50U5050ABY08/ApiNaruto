@@ -142,7 +142,13 @@ public SecurityFilterChain securityFilterChain(
     );
 
     configuration.setAllowedHeaders(
-            List.of("Authorization", "Content-Type")
+            List.of("Authorization",
+        "Content-Type",
+        "Accept",
+        "Origin",
+        "DNT",
+        "Cache-Control",
+        "X-Requested-With")
     );
 
     configuration.setAllowCredentials(true);
