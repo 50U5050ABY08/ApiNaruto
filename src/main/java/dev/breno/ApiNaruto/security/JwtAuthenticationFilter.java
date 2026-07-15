@@ -35,7 +35,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
+        
+        String path = request.getServletPath();
 
+if (request.getMethod().equalsIgnoreCase("OPTIONS")
+        || path.startsWith("/auth/")
+        || path.startsWith("/swagger-ui")
+        || path.startsWith("/v3/api-docs")
+        || path.equals("/actuator/health")) {
+
+    filterChain.doFilter(request, response);
+    return;
+}
+        
         String authHeader = request.getHeader("Authorization");
 
         // Não existe token ou o header não começa com "Bearer ".

@@ -27,6 +27,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.beans.factory.annotation.Value;
 import java.util.Arrays;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @RequiredArgsConstructor
@@ -53,7 +54,7 @@ public SecurityFilterChain securityFilterChain(
         HttpSecurity http) throws Exception {
 
     http
-            .cors(Customizer.withDefaults())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
             
             .csrf(AbstractHttpConfigurer::disable)
@@ -66,8 +67,8 @@ public SecurityFilterChain securityFilterChain(
                     )
             )
 
-                        .authorizeHttpRequests(auth -> auth
-
+             .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     // Login e cadastro são públicos.
                     .requestMatchers("/auth/**").permitAll()
 
