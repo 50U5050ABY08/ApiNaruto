@@ -70,7 +70,11 @@ public SecurityFilterChain securityFilterChain(
              .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     // Login e cadastro são públicos.
-                    .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers(
+                            HttpMethod.POST,
+                            "/auth/register",
+                            "/auth/login"
+                    ).permitAll()
 
                     // Documentação Swagger é pública.
                     .requestMatchers(

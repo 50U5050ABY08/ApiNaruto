@@ -29,26 +29,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
-    @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
-            throws ServletException, IOException {
-        
-        String path = request.getServletPath();
+@Override
+protected void doFilterInternal(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain filterChain)
+        throws ServletException, IOException {
 
-if (request.getMethod().equalsIgnoreCase("OPTIONS")
-        || path.startsWith("/auth/")
-        || path.startsWith("/swagger-ui")
-        || path.startsWith("/v3/api-docs")
-        || path.equals("/actuator/health")) {
+    String path = request.getServletPath();
 
-    filterChain.doFilter(request, response);
-    return;
-}
-        
-        String authHeader = request.getHeader("Authorization");
+    boolean isPublicAuthRoute =
+            path.equals("/auth/register")
+                    || path.equals("/auth/login");
+
+    if (request.getMethod().equalsIgnoreCase("OPTIONS")
+            || isPublicAuthRoute
+            || path.startsWith("/swagger-ui")
+            || path.startsWith("/v3/api-docs")
+            || path.equals("/actuator/health")) {
+
+        filterChain.doFilter(request, response);
+        return;
+    }
+
+    String authHeader = request.getHeader("Authorization");
 
         // Não existe token ou o header não começa com "Bearer ".
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
