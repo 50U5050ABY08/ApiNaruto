@@ -680,6 +680,60 @@ Push to the main branch
 
 ---
 
+# Deploy Online / Online Deployment
+
+## Português
+
+A aplicação está publicada online utilizando Render e Neon PostgreSQL.
+
+```text
+Frontend:
+https://api-naruto-frontend.onrender.com
+
+Backend Health Check:
+https://api-naruto-backend.onrender.com/actuator/health
+```
+
+Arquitetura do deploy:
+
+```text
+Usuário
+→ Frontend React publicado no Render
+→ Backend Spring Boot publicado no Render
+→ Banco PostgreSQL hospedado no Neon
+```
+
+O backend utiliza variáveis de ambiente para configurar banco de dados, chave JWT e origens permitidas de CORS.
+
+Nenhuma senha, token ou credencial sensível é exposta no repositório.
+
+## English
+
+The application is deployed online using Render and Neon PostgreSQL.
+
+```text
+Frontend:
+https://api-naruto-frontend.onrender.com
+
+Backend Health Check:
+https://api-naruto-backend.onrender.com/actuator/health
+```
+
+Deployment architecture:
+
+```text
+User
+→ React frontend deployed on Render
+→ Spring Boot backend deployed on Render
+→ PostgreSQL database hosted on Neon
+```
+
+The backend uses environment variables to configure database access, JWT secret and allowed CORS origins.
+
+No passwords, tokens or sensitive credentials are exposed in the repository.
+
+---
+
 # Demonstração / Demo
 
 ### Fluxo principal da API
