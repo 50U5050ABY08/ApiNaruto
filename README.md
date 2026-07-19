@@ -1,7 +1,11 @@
 # API Naruto Fullstack
+
 [![CI](https://github.com/50U5050ABY08/ApiNaruto/actions/workflows/ci.yml/badge.svg)](https://github.com/50U5050ABY08/ApiNaruto/actions/workflows/ci.yml)
 [![CD](https://github.com/50U5050ABY08/ApiNaruto/actions/workflows/cd.yml/badge.svg)](https://github.com/50U5050ABY08/ApiNaruto/actions/workflows/cd.yml)
-## Português
+
+## Visão geral / Overview
+
+### Português
 
 Projeto fullstack para gerenciamento de ninjas, missões e autenticação de usuários, desenvolvido com **Spring Boot** no backend e **React com TypeScript** no frontend.
 
@@ -9,7 +13,7 @@ O projeto simula uma aplicação real com autenticação JWT, controle de permis
 
 ---
 
-## English
+### English
 
 Fullstack project for managing ninjas, missions and user authentication, built with **Spring Boot** on the backend and **React with TypeScript** on the frontend.
 
@@ -17,9 +21,9 @@ The project simulates a real-world application with JWT authentication, role-bas
 
 ---
 
-# Tecnologias utilizadas / Technologies Used
+## Tecnologias utilizadas / Technologies Used
 
-## Backend
+### Backend
 
 - Java 17
 - Spring Boot
@@ -35,7 +39,7 @@ The project simulates a real-world application with JWT authentication, role-bas
 - Mockito
 - MockMvc
 
-## Frontend
+### Frontend
 
 - React
 - TypeScript
@@ -46,9 +50,9 @@ The project simulates a real-world application with JWT authentication, role-bas
 
 ---
 
-# Funcionalidades / Features
+## Funcionalidades / Features
 
-## Português
+### Português
 
 - Cadastro de usuários
 - Login com JWT
@@ -63,7 +67,7 @@ The project simulates a real-world application with JWT authentication, role-bas
 - Documentação da API com Swagger
 - Testes automatizados no backend e frontend
 
-## English
+### English
 
 - User registration
 - Login with JWT
@@ -80,15 +84,15 @@ The project simulates a real-world application with JWT authentication, role-bas
 
 ---
 
-# Regra de negócio principal / Main Business Rule
+## Regra de negócio principal / Main Business Rule
 
-## Português
+### Português
 
 Ninjas menores de 18 anos não podem participar de missões Rank A.
 
 Essa regra é aplicada tanto no cadastro quanto na atualização de ninjas.
 
-## English
+### English
 
 Ninjas under 18 years old cannot participate in Rank A missions.
 
@@ -96,9 +100,9 @@ This rule is applied both when creating and updating ninjas.
 
 ---
 
-# Segurança / Security
+## Segurança / Security
 
-## Português
+### Português
 
 A API utiliza autenticação JWT e autorização baseada em roles.
 
@@ -126,7 +130,7 @@ DELETE /ninjas/{id}
 
 O frontend também oculta ações administrativas para usuários comuns, mas a segurança real é garantida pelo backend.
 
-## English
+### English
 
 The API uses JWT authentication and role-based authorization.
 
@@ -156,21 +160,21 @@ The frontend also hides administrative actions from regular users, but the real 
 
 ---
 
-# Variáveis de ambiente / Environment Variables
+## Variáveis de ambiente / Environment Variables
 
-## Português
+### Português
 
 O projeto utiliza variáveis de ambiente para evitar que senhas, chaves JWT e configurações sensíveis sejam enviadas para o GitHub.
 
-## English
+### English
 
 The project uses environment variables to prevent passwords, JWT secrets and sensitive configuration from being pushed to GitHub.
 
 ---
 
-## Backend
+### Backend
 
-### Português
+#### Português
 
 O backend utiliza as seguintes variáveis:
 
@@ -211,7 +215,7 @@ jwt.expiration=1h
 
 A senha do banco e a chave JWT real não devem ser enviadas para o GitHub.
 
-### English
+#### English
 
 The backend uses the following environment variables:
 
@@ -254,9 +258,9 @@ The real database password and JWT secret must not be pushed to GitHub.
 
 ---
 
-## Frontend
+### Frontend
 
-### Português
+#### Português
 
 Dentro da pasta `frontend`, existe um arquivo de exemplo:
 
@@ -296,7 +300,7 @@ VITE_API_URL=http://localhost:8080
 
 Os arquivos `.env` e `.env.test` são ignorados pelo Git. Apenas o `.env.example` deve ser versionado.
 
-### English
+#### English
 
 Inside the `frontend` folder, there is an example file:
 
@@ -338,9 +342,9 @@ The `.env` and `.env.test` files are ignored by Git. Only `.env.example` should 
 
 ---
 
-# Banco de dados / Database
+## Banco de dados / Database
 
-## Português
+### Português
 
 Banco utilizado:
 
@@ -354,7 +358,7 @@ Nome do banco:
 narutodb
 ```
 
-## English
+### English
 
 Database used:
 
@@ -370,9 +374,9 @@ narutodb
 
 ---
 
-# Como rodar o backend / How to Run the Backend
+## Como rodar o backend / How to Run the Backend
 
-## Português
+### Português
 
 Na raiz do projeto, execute:
 
@@ -388,7 +392,7 @@ A API ficará disponível em:
 http://localhost:8080
 ```
 
-## English
+### English
 
 From the project root, run:
 
@@ -406,9 +410,9 @@ http://localhost:8080
 
 ---
 
-# Documentação Swagger / Swagger Documentation
+## Documentação Swagger / Swagger Documentation
 
-## Português
+### Português
 
 Com o backend rodando, acesse:
 
@@ -422,7 +426,7 @@ OpenAPI JSON:
 http://localhost:8080/v3/api-docs
 ```
 
-## English
+### English
 
 With the backend running, access:
 
@@ -438,11 +442,9 @@ http://localhost:8080/v3/api-docs
 
 ---
 
----
+## Como rodar com Docker / How to Run with Docker
 
-# Como rodar com Docker / How to Run with Docker
-
-## Português
+### Português
 
 O projeto possui configuração Docker para subir a aplicação completa com:
 
@@ -537,9 +539,7 @@ docker compose down -v
 
 Atenção: `docker compose down -v` remove os dados persistidos do PostgreSQL Docker.
 
----
-
-## English
+### English
 
 The project includes Docker configuration to run the complete application with:
 
@@ -636,9 +636,9 @@ Warning: `docker compose down -v` removes the persisted Docker PostgreSQL data.
 
 ---
 
-# Docker Images / Imagens Docker
+## Docker Images / Imagens Docker
 
-## Português
+### Português
 
 As imagens Docker do backend e do frontend são geradas automaticamente pelo workflow de CD e publicadas no GitHub Container Registry.
 
@@ -650,7 +650,7 @@ Frontend image:
 ghcr.io/50u5050aby08/apinaruto-frontend:latest
 ```
 
-## English
+### English
 
 The backend and frontend Docker images are automatically built by the CD workflow and published to GitHub Container Registry.
 
@@ -662,7 +662,7 @@ Frontend image:
 ghcr.io/50u5050aby08/apinaruto-frontend:latest
 ```
 
-## Fluxo de publicação / Publishing flow
+### Fluxo de publicação / Publishing flow
 
 ```text
 Push na branch main
@@ -680,9 +680,9 @@ Push to the main branch
 
 ---
 
-# Deploy Online / Online Deployment
+## Deploy Online / Online Deployment
 
-## Português
+### Português
 
 A aplicação está publicada online utilizando Render e Neon PostgreSQL.
 
@@ -707,7 +707,7 @@ O backend utiliza variáveis de ambiente para configurar banco de dados, chave J
 
 Nenhuma senha, token ou credencial sensível é exposta no repositório.
 
-## English
+### English
 
 The application is deployed online using Render and Neon PostgreSQL.
 
@@ -734,7 +734,7 @@ No passwords, tokens or sensitive credentials are exposed in the repository.
 
 ---
 
-# Demonstração / Demo
+## Demonstração / Demo
 
 ### Fluxo principal da API
 
@@ -880,13 +880,12 @@ Use only placeholder values, such as:
 demo_user
 123456
 ```
----
 
 ---
 
-# Como rodar o frontend / How to Run the Frontend
+## Como rodar o frontend / How to Run the Frontend
 
-## Português
+### Português
 
 Entre na pasta do frontend:
 
@@ -912,7 +911,7 @@ O frontend ficará disponível em:
 http://localhost:5173
 ```
 
-## English
+### English
 
 Enter the frontend folder:
 
@@ -940,9 +939,9 @@ http://localhost:5173
 
 ---
 
-# Testes do backend / Backend Tests
+## Testes do backend / Backend Tests
 
-## Português
+### Português
 
 Na raiz do projeto, execute:
 
@@ -957,7 +956,7 @@ Testes implementados:
 - Testes de segurança do NinjaController
 - Testes de regras de negócio do NinjaService
 
-## English
+### English
 
 From the project root, run:
 
@@ -974,9 +973,9 @@ Implemented tests:
 
 ---
 
-# Testes do frontend / Frontend Tests
+## Testes do frontend / Frontend Tests
 
-## Português
+### Português
 
 Entre na pasta do frontend:
 
@@ -999,7 +998,7 @@ Testes implementados:
 - Testes do NinjaForm
 - Testes de integração do App
 
-## English
+### English
 
 Enter the frontend folder:
 
@@ -1024,9 +1023,9 @@ Implemented tests:
 
 ---
 
-# Validação de qualidade do frontend / Frontend Quality Validation
+## Validação de qualidade do frontend / Frontend Quality Validation
 
-## Português
+### Português
 
 Dentro da pasta `frontend`, execute:
 
@@ -1039,7 +1038,7 @@ O comando `lint` valida o padrão do código.
 
 O comando `build` gera a versão de produção do frontend.
 
-## English
+### English
 
 Inside the `frontend` folder, run:
 
@@ -1054,7 +1053,7 @@ The `build` command generates the production version of the frontend.
 
 ---
 
-# Estrutura do projeto / Project Structure
+## Estrutura do projeto / Project Structure
 
 ```text
 ApiNarutonetbeans/
@@ -1081,9 +1080,9 @@ ApiNarutonetbeans/
 
 ---
 
-# Status do projeto / Project Status
+## Status do projeto / Project Status
 
-## Português
+### Português
 
 Projeto em desenvolvimento com foco em aprendizado, boas práticas e construção de portfólio fullstack.
 
@@ -1100,9 +1099,14 @@ Principais pontos já implementados:
 - CRUD integrado
 - Testes automatizados
 - Validação com lint e build
+- Docker e Docker Compose
+- Healthcheck com Spring Boot Actuator
+- CI com GitHub Actions
+- CD com publicação de imagens Docker no GitHub Container Registry
+- Deploy online com Render e Neon PostgreSQL
 - Configuração segura com variáveis de ambiente
 
-## English
+### English
 
 Project under development with a focus on learning, best practices and building a fullstack portfolio.
 
@@ -1119,4 +1123,9 @@ Main features already implemented:
 - Integrated CRUD
 - Automated tests
 - Lint and build validation
+- Docker and Docker Compose
+- Healthcheck with Spring Boot Actuator
+- CI with GitHub Actions
+- CD with Docker image publishing to GitHub Container Registry
+- Online deployment with Render and Neon PostgreSQL
 - Secure configuration with environment variables
