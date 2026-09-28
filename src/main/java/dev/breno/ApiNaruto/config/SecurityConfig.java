@@ -35,7 +35,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserRepository userRepository;
-    
+
     @Bean
 public UserDetailsService userDetailsService() {
     return username -> userRepository.findByUsername(username)
@@ -48,15 +48,15 @@ public UserDetailsService userDetailsService() {
                     "Usuario nao encontrado: " + username
             ));
 }
-    
+
     @Bean
 public SecurityFilterChain securityFilterChain(
         HttpSecurity http) throws Exception {
 
     http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            
-            
+
+
             .csrf(AbstractHttpConfigurer::disable)
 
             // Não cria sessão no servidor.
@@ -69,12 +69,21 @@ public SecurityFilterChain securityFilterChain(
 
              .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    // Login e cadastro são públicos.
+                    // Login permanece público.
                     .requestMatchers(
                             HttpMethod.POST,
-                            "/auth/register",
                             "/auth/login"
                     ).permitAll()
+
+                    // Cadastro de usuários exige administrador.
+                    .requestMatchers(
+                            HttpMethod.POST,
+                            "/auth/register"
+                    ).hasAuthority("ROLE_ADMIN")
+
+                    // API administrativa de produtos.
+                    .requestMatchers("/produtos/**")
+                    .hasAuthority("ROLE_ADMIN")
 
                     // Documentação Swagger é pública.
                     .requestMatchers(
@@ -93,7 +102,7 @@ public SecurityFilterChain securityFilterChain(
                     // As demais rotas precisam de JWT.
                     .anyRequest().authenticated()
             )
-            
+
             .exceptionHandling(exception -> exception
 
         // Sem autenticação ou token:
@@ -129,7 +138,7 @@ public SecurityFilterChain securityFilterChain(
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
@@ -143,7 +152,7 @@ public SecurityFilterChain securityFilterChain(
     );
 
     configuration.setAllowedMethods(
-            List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
     );
 
     configuration.setAllowedHeaders(
@@ -168,7 +177,7 @@ public SecurityFilterChain securityFilterChain(
 
     return source;
     }
-    
+
     @Value("${app.cors.allowed-origins:http://localhost:5173,http://localhost:5174}")
 private String allowedOrigins;
 }

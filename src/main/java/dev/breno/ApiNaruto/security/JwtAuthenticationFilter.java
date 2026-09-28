@@ -39,8 +39,7 @@ protected void doFilterInternal(
     String path = request.getServletPath();
 
     boolean isPublicAuthRoute =
-            path.equals("/auth/register")
-                    || path.equals("/auth/login");
+            path.equals("/auth/login");
 
     if (request.getMethod().equalsIgnoreCase("OPTIONS")
             || isPublicAuthRoute

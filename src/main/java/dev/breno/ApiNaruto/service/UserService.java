@@ -10,8 +10,10 @@ import dev.breno.ApiNaruto.dto.UserRequestDTO;
 import dev.breno.ApiNaruto.dto.UserResponseDTO;
 import dev.breno.ApiNaruto.exception.CredenciaisInvalidasException;
 import dev.breno.ApiNaruto.exception.UsuarioNaoEncontradoException;
+import dev.breno.ApiNaruto.exception.RegraDeNegocioException;
 import dev.breno.ApiNaruto.model.UserModel;
 import dev.breno.ApiNaruto.repository.UserRepository;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,25 +40,31 @@ public class UserService {
     private final JwtService jwtService;
 
     public UserModel buscarPorUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsername(normalizarUsername(username))
                 .orElseThrow(
                         () -> new UsuarioNaoEncontradoException(username)
                 );
     }
 
-    
-    
+
+
     public UserResponseDTO cadastrarUsuario(UserRequestDTO userDTO) {
+
+    String username = normalizarUsername(userDTO.getUsername());
+
+    if (userRepository.findByUsername(username).isPresent()) {
+        throw new RegraDeNegocioException("Username já está em uso.");
+    }
 
     UserModel user = new UserModel();
 
-    user.setUsername(userDTO.getUsername());
+    user.setUsername(username);
 
     user.setPassword(
             passwordEncoder.encode(userDTO.getPassword())
     );
-    
-// Todo cadastro realizado pela rota pública recebe perfil comum.
+
+// Todo cadastro realizado pelo administrador recebe perfil comum por padrão.
     user.setRole("ROLE_USER");
 
     UserModel userSalvo = userRepository.save(user);
@@ -67,10 +75,10 @@ public class UserService {
             userSalvo.getRole()
         );
     }
-    
+
     public AuthResponseDTO autenticar(AuthRequestDTO authDTO) {
 
-    UserModel user = userRepository.findByUsername(authDTO.getUsername())
+    UserModel user = userRepository.findByUsername(normalizarUsername(authDTO.getUsername()))
             .orElseThrow(() -> new CredenciaisInvalidasException());
 
     boolean senhaCorreta = passwordEncoder.matches(
@@ -85,6 +93,11 @@ public class UserService {
         String token = jwtService.gerarToken(user.getUsername());
 
         return new AuthResponseDTO(token, user.getRole());
+    }
+
+
+    private String normalizarUsername(String username) {
+        return username.trim().toLowerCase(Locale.ROOT);
     }
 
 }

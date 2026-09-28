@@ -4,6 +4,7 @@
  */
 package dev.breno.ApiNaruto.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,11 +46,14 @@ public class UserModel {
     private Long id;
 
     @NotBlank(message = "O username é obrigatório")
+    @Column(nullable = false, unique = true, length = 100)
     private String username;
 
     @NotBlank(message = "A senha é obrigatória")
+    @Column(nullable = false, length = 100)
     private String password;
 
     @NotBlank(message = "A role é obrigatória")
+    @Column(nullable = false, length = 30)
     private String role;
 }
